@@ -24,5 +24,4 @@ export class Form extends Model {
   @Column
   link: string;
   
- 
 }
