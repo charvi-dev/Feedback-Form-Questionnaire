@@ -16,9 +16,23 @@ import { FormModule } from './modules/form/form.module';
 import { OptionModule } from './modules/option/option.module';
 import { QuestionModule } from './modules/question/question.module';
 import { SubmissionModule } from './modules/submission/submission.module';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from './db/models/user.model';
 
 @Module({
   imports: [
+    SequelizeModule.forRoot({
+      dialect: 'postgres', // Specify your database dialect
+      host:"localhost", // Your database host
+      port: 5432, // Your database port
+      username: "postgres", // Your database username
+      password: "Asdf!234", // Your database password
+      database: "feedbackQuestionnaire", // Your database name
+      autoLoadModels: true, // Automatically load models from the models directory
+      synchronize: false, // Automatically synchronize models with database (Use `false` in production)
+      models:[User]
+    }),
+    SequelizeModule.forFeature([User]),
     UserModule,
     FormModule,
     OptionModule,
