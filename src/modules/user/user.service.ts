@@ -1,26 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { userDetails } from './dto/userDetails.dto';
+import { User } from 'src/db/models/user.model';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+
+  async signUp(signUpDetails: userDetails) {
+    try {
+      const res =  await User.create({userName:signUpDetails.userName,password:signUpDetails.password});
+      return res;
+    } catch (error) {
+      throw new BadRequestException("Please enter fields correctly")
+    }
+    
+  }
+  login(loginDetails:userDetails){
+    try {
+      return "jwt token"
+    } catch (error) {
+      
+    }
   }
 
-  findAll() {
-    return `This action returns all user`;
+  update(updateDetails:userDetails) {
+    return "Updated User";
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+  
 }

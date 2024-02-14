@@ -6,37 +6,29 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { userDetails } from './dto/userDetails.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Post('/signUp')
+  signUp(@Body() signUpDetails: userDetails) {
+    return this.userService.signUp(signUpDetails);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Post('/login')
+  login(@Body() loginDetails: userDetails) {
+    return this.userService.login(loginDetails)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @Put('/')
+  updateDetails(@Body() updateDetails:userDetails){
+   return this.userService.update(updateDetails)
   }
 }

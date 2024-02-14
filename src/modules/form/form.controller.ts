@@ -3,40 +3,46 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { FormService } from './form.service';
-import { CreateFormDto } from './dto/create-form.dto';
-import { UpdateFormDto } from './dto/update-form.dto';
+import { formDetailsDto } from './dto/formDetails.dto';
+import { UpdateFormDto } from './dto/updateform.dto';
 
 @Controller('form')
 export class FormController {
   constructor(private readonly formService: FormService) {}
 
-  @Post()
-  create(@Body() createFormDto: CreateFormDto) {
-    return this.formService.create(createFormDto);
+  @Post('/')
+  create(@Body() formDetails: formDetailsDto) {
+    return this.formService.create(formDetails);
   }
 
-  @Get()
-  findAll() {
-    return this.formService.findAll();
+  @Get('/:userId')
+  findAll(@Param('userId') userId:number) {
+    return this.formService.findAll(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.formService.findOne(+id);
+  @Get('/:id/link')
+  getFormLink(@Param('id') id:number){
+    return this.formService.getFormLink(id)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFormDto: UpdateFormDto) {
+  @Put('/:id/:status')
+  updateStatus(@Param('id') id:number,@Param('status') status: string, @Body() updateFormDto: UpdateFormDto) {
+    return this.formService.updateStatus(+id, updateFormDto);
+  }
+
+
+  @Put('/:id')
+  update(@Param('id') id: number, @Body() updateFormDto: UpdateFormDto) {
     return this.formService.update(+id, updateFormDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete('/:id')
+  remove(@Param('id') id: number) {
     return this.formService.remove(+id);
   }
 }
