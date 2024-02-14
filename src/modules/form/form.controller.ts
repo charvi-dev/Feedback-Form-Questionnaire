@@ -17,27 +17,26 @@ export class FormController {
 
   @Post('/')
   create(@Body() formDetails: formDetailsDto) {
-    return this.formService.create(formDetails);
+    return formDetails;
   }
 
   @Get('/:userId')
-  findAll(@Param('userId') userId:number) {
-    return this.formService.findAll(userId);
+  findAll(@Param('userId') userId:string) {
+    return this.formService.findAll(+userId);
   }
 
   @Get('/:id/link')
-  getFormLink(@Param('id') id:number){
-    return this.formService.getFormLink(id)
+  getFormLink(@Param('id') id:string){
+    return this.formService.getFormLink(+id)
   }
 
   @Put('/:id/:status')
-  updateStatus(@Param('id') id:number,@Param('status') status: string, @Body() updateFormDto: UpdateFormDto) {
-    return this.formService.updateStatus(+id, updateFormDto);
+  updateStatus(@Param('id') id:string,@Param('status') status: string) {
+    return this.formService.updateStatus(+id, status);
   }
 
-
   @Put('/:id')
-  update(@Param('id') id: number, @Body() updateFormDto: UpdateFormDto) {
+  update(@Param('id') id: string, @Body() updateFormDto: UpdateFormDto) {
     return this.formService.update(+id, updateFormDto);
   }
 

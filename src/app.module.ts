@@ -23,9 +23,7 @@ import { Option } from './db/models/option.model';
 import { Submission } from './db/models/submission.model';
 import { Question } from './db/models/question.model';
 import { Form } from './db/models/form.model';
-import { TypeController } from './modules/type/type.controller';
-import { TypeService } from './modules/type/type.service';
-import { TypeModule } from './modules/type/type.module';
+
 
 @Module({
   imports: [
@@ -45,7 +43,6 @@ import { TypeModule } from './modules/type/type.module';
     OptionModule,
     QuestionModule,
     SubmissionModule,
-    TypeModule,
   ],
   controllers: [
     AppController,
@@ -54,7 +51,6 @@ import { TypeModule } from './modules/type/type.module';
     QuestionController,
     SubmissionController,
     UserController,
-    TypeController,
   ],
   providers: [
     AppService,
@@ -63,7 +59,6 @@ import { TypeModule } from './modules/type/type.module';
     QuestionService,
     SubmissionService,
     UserService,
-    TypeService,
   ],
 })
 export class AppModule {}

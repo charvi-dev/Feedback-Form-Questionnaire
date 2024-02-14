@@ -6,36 +6,32 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
-import { CreateOptionDto } from './dto/create-option.dto';
+import { OptionDto } from './dto/option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 
 @Controller('option')
 export class OptionController {
   constructor(private readonly optionService: OptionService) {}
 
-  @Post()
-  create(@Body() createOptionDto: CreateOptionDto) {
-    return this.optionService.create(createOptionDto);
+  @Post('/')
+  create(@Body() OptionDto: OptionDto) {
+    return this.optionService.create(OptionDto);
   }
 
-  @Get()
-  findAll() {
-    return this.optionService.findAll();
+  @Get('/:questionId')
+  findAll(@Param('questionId') questionId:string) {
+    return this.optionService.findAll(+questionId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.optionService.findOne(+id);
+  @Put('/:id')
+  update(@Param('id') id: string, @Body() OptionDto: OptionDto) {
+    return this.optionService.update(+id, OptionDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOptionDto: UpdateOptionDto) {
-    return this.optionService.update(+id, updateOptionDto);
-  }
-
-  @Delete(':id')
+  @Delete('/:id')
   remove(@Param('id') id: string) {
     return this.optionService.remove(+id);
   }

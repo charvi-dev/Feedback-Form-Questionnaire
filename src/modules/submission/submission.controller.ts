@@ -20,22 +20,9 @@ export class SubmissionController {
     return this.submissionService.create(createSubmissionDto);
   }
 
-  @Get()
-  findAll() {
-    return this.submissionService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.submissionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateSubmissionDto: UpdateSubmissionDto,
-  ) {
-    return this.submissionService.update(+id, updateSubmissionDto);
+  @Get('/:formId')
+  findAll(@Param('formId') formId:string) {
+    return this.submissionService.findAll(+formId);
   }
 
   @Delete(':id')

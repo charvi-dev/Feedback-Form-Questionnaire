@@ -5,15 +5,11 @@ import { UpdateSubmissionDto } from './dto/update-submission.dto';
 @Injectable()
 export class SubmissionService {
   create(createSubmissionDto: CreateSubmissionDto) {
-    return 'This action adds a new submission';
+    return createSubmissionDto.formResponse;
   }
 
-  findAll() {
-    return `This action returns all submission`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} submission`;
+  findAll(formId:number) {
+    return `This action returns all submission of  a form`;
   }
 
   update(id: number, updateSubmissionDto: UpdateSubmissionDto) {

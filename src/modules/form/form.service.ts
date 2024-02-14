@@ -16,7 +16,7 @@ export class FormService {
   findOne(id: number) {
     return `This action returns a #${id} form`;
   }
-  updateStatus(id: number, updateFormDetails: UpdateFormDto) {
+  updateStatus(id: number,status:string) {
     return `This action updates a #${id} form status`;
     
   }

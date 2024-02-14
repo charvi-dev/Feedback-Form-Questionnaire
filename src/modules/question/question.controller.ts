@@ -3,42 +3,33 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+import { QuestionDto } from './dto/question.dto';
 
 @Controller('question')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
-  @Post()
-  create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionService.create(createQuestionDto);
+  @Post('/')
+  create(@Body() QuestionDetails: QuestionDto) {
+    return this.questionService.create(QuestionDetails);
   }
 
-  @Get()
-  findAll() {
-    return this.questionService.findAll();
+  @Get('/:formId')
+  findAll(@Param('formId') formId:number) {
+    return this.questionService.findAll(formId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.questionService.findOne(+id);
+  @Put('/:id')
+  update(@Param('id') id:string,@Body() updatedDetails:QuestionDto){
+    return this.questionService.update(+id,updatedDetails);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateQuestionDto: UpdateQuestionDto,
-  ) {
-    return this.questionService.update(+id, updateQuestionDto);
-  }
-
-  @Delete(':id')
+  @Delete('/:id')
   remove(@Param('id') id: string) {
     return this.questionService.remove(+id);
   }

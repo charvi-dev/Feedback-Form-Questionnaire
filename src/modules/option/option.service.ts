@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOptionDto } from './dto/create-option.dto';
+import { OptionDto } from './dto/option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 
 @Injectable()
 export class OptionService {
-  create(createOptionDto: CreateOptionDto) {
+  create(OptionDto: OptionDto) {
     return 'This action adds a new option';
   }
 
-  findAll() {
-    return `This action returns all option`;
+  findAll(questionId:number) {
+    return `This action returns all option of a question`;
   }
 
   findOne(id: number) {
