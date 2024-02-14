@@ -23,26 +23,29 @@ import { Option } from './db/models/option.model';
 import { Submission } from './db/models/submission.model';
 import { Question } from './db/models/question.model';
 import { Form } from './db/models/form.model';
+import { TypeController } from './modules/type/type.controller';
+import { TypeService } from './modules/type/type.service';
+import { TypeModule } from './modules/type/type.module';
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
-      dialect: 'postgres', // Specify your database dialect
-      host:"localhost", // Your database host
-      port: 5432, // Your database port
-      username: "postgres", // Your database username
-      password: "Asdf!234", // Your database password
-      database: "feedbackQuestionnaire", // Your database name
-      autoLoadModels: true, // Automatically load models from the models directory
-      synchronize: false, // Automatically synchronize models with database (Use `false` in production)
-      models:[User,Form,Type,Question,Submission,Option],
+      dialect: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'Asdf!234',
+      database: 'feedbackQuestionnaire',
+      autoLoadModels: true,
+      synchronize: false,
+      models: [User, Form, Type, Question, Submission, Option],
     }),
-    SequelizeModule.forFeature([User,Form,Type,Question,Submission,Option]),
     UserModule,
     FormModule,
     OptionModule,
     QuestionModule,
     SubmissionModule,
+    TypeModule,
   ],
   controllers: [
     AppController,
@@ -51,6 +54,7 @@ import { Form } from './db/models/form.model';
     QuestionController,
     SubmissionController,
     UserController,
+    TypeController,
   ],
   providers: [
     AppService,
@@ -59,6 +63,7 @@ import { Form } from './db/models/form.model';
     QuestionService,
     SubmissionService,
     UserService,
+    TypeService,
   ],
 })
 export class AppModule {}

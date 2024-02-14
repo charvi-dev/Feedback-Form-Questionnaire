@@ -2,7 +2,7 @@ import { Column, Model, Table } from 'sequelize-typescript';
 import { Form } from './form.model';
 import { Type } from './type.model';
 
-@Table({tableName:'question'})
+@Table({ tableName: 'question' })
 export class Question extends Model {
   @Column({ references: { model: Form, key: 'id' } })
   formId: number;
