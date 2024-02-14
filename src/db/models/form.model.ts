@@ -1,7 +1,7 @@
 import { Column, Model, Table } from 'sequelize-typescript';
 import { User } from './user.model';
 
-@Table
+@Table({tableName:'form'})
 export class Form extends Model {
   @Column
   title: string;

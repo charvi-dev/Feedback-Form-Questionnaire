@@ -1,7 +1,7 @@
 import { Column, Model, Table } from 'sequelize-typescript';
 import { Question } from './question.model';
 
-@Table
+@Table({tableName:'option'})
 export class Option extends Model {
   @Column({references:{model:Question,key:'id'}})
   questionId: number

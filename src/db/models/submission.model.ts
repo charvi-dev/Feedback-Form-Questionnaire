@@ -1,8 +1,8 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 import{Form} from './form.model'
 
 
-@Table
+@Table({tableName:'submission'})
 export class Submission extends Model {
   @Column({references:{model:Form,key:'id'}})
   formId: number;
@@ -10,7 +10,7 @@ export class Submission extends Model {
   @Column
   submissionDate: Date;
 
-  @Column
-  formResponse: JSON
+  @Column({type:DataType.JSON})
+  formResponse: any
 
 }
