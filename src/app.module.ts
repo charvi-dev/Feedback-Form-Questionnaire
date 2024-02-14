@@ -34,7 +34,7 @@ import { TypeModule } from './modules/type/type.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'Asdf!234',
+      password: 'admin',
       database: 'feedbackQuestionnaire',
       autoLoadModels: true,
       synchronize: false,

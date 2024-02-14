@@ -4,8 +4,9 @@ import { UpdateFormDto } from './dto/updateform.dto';
 
 @Injectable()
 export class FormService {
+  
   create(formDetails: formDetailsDto) {
-    return 'This action adds a new form';
+    return formDetails;
   }
 
   findAll(userId:number) {
@@ -21,7 +22,7 @@ export class FormService {
   }
 
   update(id: number, updateFormDetails: UpdateFormDto) {
-    return `This action updates a #${id} form`;
+    return updateFormDetails;
   }
 
   getFormLink(id:number){

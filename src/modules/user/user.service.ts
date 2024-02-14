@@ -10,10 +10,10 @@ export class UserService {
       const res =  await User.create({userName:signUpDetails.userName,password:signUpDetails.password});
       return res;
     } catch (error) {
-      throw new BadRequestException("Please enter fields correctly")
+      throw new BadRequestException(error["errors"])
     }
-    
   }
+
   login(loginDetails:userDetails){
     try {
       return "jwt token"
@@ -26,5 +26,4 @@ export class UserService {
     return "Updated User";
   }
 
-  
 }

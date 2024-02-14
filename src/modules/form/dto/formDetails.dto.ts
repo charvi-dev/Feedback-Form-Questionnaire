@@ -1,12 +1,10 @@
-export class formDetailsDto {
 
+export class formDetailsDto {
     title: string;
     userId: number;
     description: string;
-    status: 'draft' | 'published' | 'closed';
+    status:string;
     publishedDate: Date;
     closeDate: Date;
     link: string;
 }
-
-
