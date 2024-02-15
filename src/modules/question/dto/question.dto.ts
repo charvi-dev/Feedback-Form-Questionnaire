@@ -1,5 +1,5 @@
 export class QuestionDto {
-    formId:number;
-    questionDescription:string;
-    type:number;
+  formId: number;
+  questionDescription: string;
+  type: number;
 }

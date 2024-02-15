@@ -20,13 +20,13 @@ export class QuestionController {
   }
 
   @Get('/:formId')
-  findAll(@Param('formId') formId:number) {
+  findAll(@Param('formId') formId: number) {
     return this.questionService.findAll(formId);
   }
 
   @Put('/:id')
-  update(@Param('id') id:string,@Body() updatedDetails:QuestionDto){
-    return this.questionService.update(+id,updatedDetails);
+  update(@Param('id') id: string, @Body() updatedDetails: QuestionDto) {
+    return this.questionService.update(+id, updatedDetails);
   }
 
   @Delete('/:id')

@@ -21,17 +21,17 @@ export class FormController {
   }
 
   @Get('/:userId')
-  findAll(@Param('userId') userId:string) {
+  findAll(@Param('userId') userId: string) {
     return this.formService.findAll(+userId);
   }
 
   @Get('/:id/link')
-  getFormLink(@Param('id') id:string){
-    return this.formService.getFormLink(+id)
+  getFormLink(@Param('id') id: string) {
+    return this.formService.getFormLink(+id);
   }
 
   @Put('/:id/:status')
-  updateStatus(@Param('id') id:string,@Param('status') status: string) {
+  updateStatus(@Param('id') id: string, @Param('status') status: string) {
     return this.formService.updateStatus(+id, status);
   }
 

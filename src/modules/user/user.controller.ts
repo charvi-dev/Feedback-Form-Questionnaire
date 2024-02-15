@@ -3,14 +3,17 @@ import {
   Post,
   Body,
   Put,
+  UseGuards,
+  Get,
+  Headers,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { userDetails } from './dto/userDetails.dto';
-
+import { UserguardGuard } from './userguard.guard';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/signUp')
   signUp(@Body() signUpDetails: userDetails) {
@@ -19,11 +22,17 @@ export class UserController {
 
   @Post('/login')
   login(@Body() loginDetails: userDetails) {
-    return this.userService.login(loginDetails)
+    return this.userService.login(loginDetails);
   }
 
-  @Put('/')
-  updateDetails(@Body() updateDetails:userDetails){
-   return this.userService.update(updateDetails)
+  @Put('/update')
+  @UseGuards(UserguardGuard)
+  updateUserDetails(
+    @Body() updateDetails: userDetails,
+    @Headers('Authorization') authorization: string,
+  ) {
+    const jwtToken = authorization.replace('Bearer ', '');
+
+    return this.userService.updateDetails(updateDetails, jwtToken);
   }
 }

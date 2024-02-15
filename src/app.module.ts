@@ -24,7 +24,6 @@ import { Submission } from './db/models/submission.model';
 import { Question } from './db/models/question.model';
 import { Form } from './db/models/form.model';
 
-
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -32,7 +31,7 @@ import { Form } from './db/models/form.model';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'admin',
+      password: 'Asdf!234',
       database: 'feedbackQuestionnaire',
       autoLoadModels: true,
       synchronize: false,

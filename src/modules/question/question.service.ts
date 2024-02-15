@@ -8,7 +8,7 @@ export class QuestionService {
     return 'This action adds a new question';
   }
 
-  findAll(formId:number) {
+  findAll(formId: number) {
     return `This action returns all question of a particlar form`;
   }
 

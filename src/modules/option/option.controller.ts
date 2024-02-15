@@ -22,7 +22,7 @@ export class OptionController {
   }
 
   @Get('/:questionId')
-  findAll(@Param('questionId') questionId:string) {
+  findAll(@Param('questionId') questionId: string) {
     return this.optionService.findAll(+questionId);
   }
 

@@ -8,7 +8,7 @@ export class OptionService {
     return 'This action adds a new option';
   }
 
-  findAll(questionId:number) {
+  findAll(questionId: number) {
     return `This action returns all option of a question`;
   }
 

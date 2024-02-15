@@ -8,7 +8,7 @@ export class SubmissionService {
     return createSubmissionDto.formResponse;
   }
 
-  findAll(formId:number) {
+  findAll(formId: number) {
     return `This action returns all submission of  a form`;
   }
 

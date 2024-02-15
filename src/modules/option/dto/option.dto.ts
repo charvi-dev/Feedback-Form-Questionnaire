@@ -1,4 +1,4 @@
 export class OptionDto {
-    questionId:number;
-    optionText:string
+  questionId: number;
+  optionText: string;
 }
