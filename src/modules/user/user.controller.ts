@@ -1,6 +1,15 @@
-import { Controller, Post, Body, Put } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Put,
+  UseGuards,
+  Get,
+  Headers,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { userDetails } from './dto/userDetails.dto';
+import { UserguardGuard } from './userguard.guard';
 
 @Controller('user')
 export class UserController {
@@ -16,8 +25,14 @@ export class UserController {
     return this.userService.login(loginDetails);
   }
 
-  @Put('/')
-  updateDetails(@Body() updateDetails: userDetails) {
-    return this.userService.update(updateDetails);
+  @Put('/update')
+  @UseGuards(UserguardGuard)
+  updateUserDetails(
+    @Body() updateDetails: userDetails,
+    @Headers('Authorization') authorization: string,
+  ) {
+    const jwtToken = authorization.replace('Bearer ', '');
+
+    return this.userService.updateDetails(updateDetails, jwtToken);
   }
 }
