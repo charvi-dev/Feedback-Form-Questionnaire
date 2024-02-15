@@ -1,26 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { OptionDto } from './dto/option.dto';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UpdateOptionDto } from './dto/update-option.dto';
+import { Option } from 'src/db/models/option.model';
 
 @Injectable()
 export class OptionService {
-  create(OptionDto: OptionDto) {
-    return 'This action adds a new option';
+  async update(id: number, updateOptionDto: UpdateOptionDto) {
+    try {
+      await Option.update(
+        { optionText: updateOptionDto.optionText },
+        { where: { id: id } },
+      );
+      return `option of id ${id} is updated`;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  findAll(questionId: number) {
-    return `This action returns all option of a question`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} option`;
-  }
-
-  update(id: number, updateOptionDto: UpdateOptionDto) {
-    return `This action updates a #${id} option`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} option`;
+  async remove(id: number) {
+    try {
+      await Option.destroy({ where: { id } });
+      return ` removed option of id  ${id}`;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }

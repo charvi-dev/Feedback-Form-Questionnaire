@@ -6,32 +6,25 @@ import {
   Param,
   Delete,
   Put,
+  ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { OptionDto } from './dto/option.dto';
-
+import { UserguardGuard } from '../user/userguard.guard';
 
 @Controller('option')
+@UseGuards(UserguardGuard)
 export class OptionController {
   constructor(private readonly optionService: OptionService) {}
 
-  @Post('/')
-  create(@Body() OptionDto: OptionDto) {
-    return this.optionService.create(OptionDto);
-  }
-
-  @Get('/:questionId')
-  findAll(@Param('questionId') questionId: string) {
-    return this.optionService.findAll(+questionId);
-  }
-
   @Put('/:id')
-  update(@Param('id') id: string, @Body() OptionDto: OptionDto) {
-    return this.optionService.update(+id, OptionDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() OptionDto: OptionDto) {
+    return this.optionService.update(id, OptionDto);
   }
 
   @Delete('/:id')
-  remove(@Param('id') id: string) {
-    return this.optionService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.optionService.remove(id);
   }
 }

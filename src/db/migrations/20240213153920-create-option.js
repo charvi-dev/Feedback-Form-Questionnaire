@@ -12,7 +12,8 @@ module.exports = {
       questionId:{
         type:Sequelize.INTEGER,
         allowNull:false,
-        references:{model:'question',key:'id'}
+        references:{model:'question',key:'id'},
+        onDelete:'CASCADE'
       },
       optionText:{
         type:Sequelize.STRING,

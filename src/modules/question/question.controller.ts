@@ -7,11 +7,16 @@ import {
   Delete,
   Put,
   ValidationPipe,
+  Query,
+  ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { QuestionDto } from './dto/question.dto';
+import { UserguardGuard } from '../user/userguard.guard';
 
 @Controller('question')
+@UseGuards(UserguardGuard)
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
@@ -20,14 +25,17 @@ export class QuestionController {
     return this.questionService.addQuestion(QuestionDetails);
   }
 
-  @Get('/:formId')
-  findAll(@Param('formId') formId: number) {
+  @Get('/')
+  findAll(@Query('formId') formId: number) {
     return this.questionService.findAll(formId);
   }
 
   @Put('/:id')
-  update(@Param('id') id: string, @Body() updatedDetails: QuestionDto) {
-    return this.questionService.update(+id, updatedDetails);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatedDetails: QuestionDto,
+  ) {
+    return this.questionService.update(id, updatedDetails);
   }
 
   @Delete('/:id')

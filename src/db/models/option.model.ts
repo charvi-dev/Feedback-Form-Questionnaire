@@ -3,7 +3,7 @@ import { Question } from './question.model';
 
 @Table({ tableName: 'option' })
 export class Option extends Model {
-  @Column({ references: { model: Question, key: 'id' } })
+  @Column({ references: { model: Question, key: 'id' }, onDelete: 'CASCADE' })
   questionId: number;
 
   @Column

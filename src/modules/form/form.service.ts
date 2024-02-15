@@ -33,20 +33,31 @@ export class FormService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} form`;
+  async findOne(id: number) {
+    try {
+      const res = await Form.findOne({ where: { id } });
+      return res;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async updateStatus(id: number, status: string) {
+    let shareableLink = `http://localhost:3000/${id}`;
     try {
       if (status == 'published') {
         await Form.update(
-          { status, publishedDate: new Date(), closedDate: null },
+          {
+            status,
+            publishedDate: new Date(),
+            closedDate: null,
+            link: shareableLink,
+          },
           { where: { id } },
         );
       } else if (status == 'draft') {
         await Form.update(
-          { status, publishedDate: null, closedDate: null },
+          { status, publishedDate: null, closedDate: null, link: null },
           { where: { id } },
         );
       } else if (status == 'closed') {
@@ -55,7 +66,11 @@ export class FormService {
           { where: { id } },
         );
       }
-      return 'status changed!';
+      if (status === 'published') {
+        return shareableLink;
+      } else {
+        return 'status changed!';
+      }
     } catch (error) {
       throw new InternalServerErrorException();
     }

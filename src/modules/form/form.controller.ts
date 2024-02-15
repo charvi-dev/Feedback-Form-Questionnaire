@@ -9,12 +9,15 @@ import {
   ValidationPipe,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FormService } from './form.service';
 import { formDetailsDto } from './dto/formDetails.dto';
 import { UpdateFormDto } from './dto/updateform.dto';
+import { UserguardGuard } from '../user/userguard.guard';
 
 @Controller('form')
+@UseGuards(UserguardGuard)
 export class FormController {
   constructor(private readonly formService: FormService) {}
 

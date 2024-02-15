@@ -53,34 +53,28 @@ export class UserService {
     }
   }
 
- 
   async updateDetails(updateDetails: userDetails, jwtToken: string) {
     try {
-    
-        const id = this.getUserIdFromToken(jwtToken);
+      const id = this.getUserIdFromToken(jwtToken);
 
-        
-        const user = await User.findByPk(id);
+      const user = await User.findByPk(id);
 
-        
-        if (updateDetails.userName) {
-            user.userName = updateDetails.userName;
-        }
-        
-        if (updateDetails.password) {
-            const hashedPassword = await this.hashPassword(updateDetails.password);
-            user.password = hashedPassword;
-        }
+      if (updateDetails.userName) {
+        user.userName = updateDetails.userName;
+      }
 
-        await user.save();
+      if (updateDetails.password) {
+        const hashedPassword = await this.hashPassword(updateDetails.password);
+        user.password = hashedPassword;
+      }
 
-        return 'User details updated successfully';
-    } 
-    catch (error) {
-     
-        throw new NotFoundException();
+      await user.save();
+
+      return 'User details updated successfully';
+    } catch (error) {
+      throw new NotFoundException();
     }
- }
+  }
 
   getUserIdFromToken(token: string): number {
     try {
