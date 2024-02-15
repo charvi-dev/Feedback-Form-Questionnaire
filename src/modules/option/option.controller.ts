@@ -3,14 +3,13 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Put,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { OptionDto } from './dto/option.dto';
-import { UpdateOptionDto } from './dto/update-option.dto';
+
 
 @Controller('option')
 export class OptionController {
@@ -22,7 +21,7 @@ export class OptionController {
   }
 
   @Get('/:questionId')
-  findAll(@Param('questionId') questionId:string) {
+  findAll(@Param('questionId') questionId: string) {
     return this.optionService.findAll(+questionId);
   }
 

@@ -13,13 +13,13 @@ export class Form extends Model {
   description: string;
 
   @Column
-  status: 'draft' | 'published' | 'closed';
+  status: string;
 
   @Column
   publishedDate: Date;
 
   @Column
-  closeDate: Date;
+  closedDate: Date;
 
   @Column
   link: string;

@@ -1,6 +1,6 @@
 import { Column, Model, Table } from 'sequelize-typescript';
 import { Form } from './form.model';
-import { Type } from './type.model';
+
 
 @Table({ tableName: 'question' })
 export class Question extends Model {
@@ -10,6 +10,6 @@ export class Question extends Model {
   @Column
   questionDescription: string;
 
-  @Column({ references: { model: Type, key: 'id' } })
-  typeId: number;
+  @Column
+  type: string;
 }

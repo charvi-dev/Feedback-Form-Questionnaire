@@ -6,6 +6,9 @@ import {
   Param,
   Delete,
   Put,
+  ValidationPipe,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { FormService } from './form.service';
 import { formDetailsDto } from './dto/formDetails.dto';
@@ -16,32 +19,38 @@ export class FormController {
   constructor(private readonly formService: FormService) {}
 
   @Post('/')
-  create(@Body() formDetails: formDetailsDto) {
-    return formDetails;
+  create(@Body(new ValidationPipe()) formDetails: formDetailsDto) {
+    return this.formService.create(formDetails);
   }
 
-  @Get('/:userId')
-  findAll(@Param('userId') userId:string) {
-    return this.formService.findAll(+userId);
+  @Get('/')
+  findAll(@Query('userId') userId: number) {
+    return this.formService.findAll(userId);
   }
 
-  @Get('/:id/link')
-  getFormLink(@Param('id') id:string){
-    return this.formService.getFormLink(+id)
+  @Get('/link')
+  getFormLink(@Query('formId') formId: number) {
+    return this.formService.getFormLink(formId);
   }
 
-  @Put('/:id/:status')
-  updateStatus(@Param('id') id:string,@Param('status') status: string) {
-    return this.formService.updateStatus(+id, status);
+  @Put(':id/updateStatus')
+  updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ValidationPipe()) updateFormDetails: UpdateFormDto,
+  ) {
+    return this.formService.updateStatus(id, updateFormDetails.status);
   }
 
   @Put('/:id')
-  update(@Param('id') id: string, @Body() updateFormDto: UpdateFormDto) {
-    return this.formService.update(+id, updateFormDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ValidationPipe()) updateFormDetails: UpdateFormDto,
+  ) {
+    return this.formService.update(id, updateFormDetails);
   }
 
   @Delete('/:id')
-  remove(@Param('id') id: number) {
-    return this.formService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.formService.remove(id);
   }
 }

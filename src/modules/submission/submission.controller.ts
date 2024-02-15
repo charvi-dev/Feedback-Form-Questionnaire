@@ -21,7 +21,7 @@ export class SubmissionController {
   }
 
   @Get('/:formId')
-  findAll(@Param('formId') formId:string) {
+  findAll(@Param('formId') formId: string) {
     return this.submissionService.findAll(+formId);
   }
 

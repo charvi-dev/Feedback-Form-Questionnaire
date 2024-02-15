@@ -1,16 +1,10 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Put,
-} from '@nestjs/common';
+import { Controller, Post, Body, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { userDetails } from './dto/userDetails.dto';
 
-
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/signUp')
   signUp(@Body() signUpDetails: userDetails) {
@@ -19,11 +13,11 @@ export class UserController {
 
   @Post('/login')
   login(@Body() loginDetails: userDetails) {
-    return this.userService.login(loginDetails)
+    return this.userService.login(loginDetails);
   }
 
   @Put('/')
-  updateDetails(@Body() updateDetails:userDetails){
-   return this.userService.update(updateDetails)
+  updateDetails(@Body() updateDetails: userDetails) {
+    return this.userService.update(updateDetails);
   }
 }
