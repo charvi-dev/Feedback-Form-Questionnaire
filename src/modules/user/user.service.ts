@@ -1,13 +1,12 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
-import { userDetails } from './dto/userDetails.dto';
-import { User } from 'src/db/models/user.model';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { User } from 'src/db/models/user.model';
+import { userDetails } from './dto/userDetails.dto';
 
 @Injectable()
 export class UserService {

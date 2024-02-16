@@ -1,14 +1,13 @@
 import {
-  Controller,
-  Post,
   Body,
-  Put,
-  UseGuards,
-  Get,
+  Controller,
   Headers,
+  Post,
+  Put,
+  UseGuards
 } from '@nestjs/common';
-import { UserService } from './user.service';
 import { userDetails } from './dto/userDetails.dto';
+import { UserService } from './user.service';
 import { UserguardGuard } from './userguard.guard';
 
 @Controller('user')

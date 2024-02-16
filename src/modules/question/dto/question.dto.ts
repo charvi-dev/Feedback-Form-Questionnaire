@@ -1,4 +1,4 @@
-import { IsArray, IsEnum } from 'class-validator';
+import { IsEnum } from 'class-validator';
 
 export class QuestionDto {
   formId: number;
