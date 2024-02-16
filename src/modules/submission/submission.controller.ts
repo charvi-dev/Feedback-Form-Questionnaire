@@ -5,9 +5,11 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { SubmissionService } from './submission.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
+import { UserguardGuard } from '../user/userguard.guard';
 
 
 @Controller('submission')
@@ -20,6 +22,7 @@ export class SubmissionController {
   }
 
   @Get('/:formId')
+  @UseGuards(UserguardGuard)
   findAll(@Param('formId',ParseIntPipe) formId: number) {
     return this.submissionService.findAll(formId);
   }

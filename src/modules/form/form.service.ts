@@ -29,7 +29,7 @@ export class FormService {
 
   async findAll(userId: number) {
     try {
-      const res = await Form.findAll({ where: { userId: userId } });
+      const res = await Form.findAll({ where: { userId: userId },order:[['id', 'ASC']]});
       return res;
     } catch (error) {
       throw new InternalServerErrorException();
@@ -70,8 +70,7 @@ export class FormService {
       }
       if (status === 'published') {
         const res = (await Form.findByPk(id));
-        return `localhost:${process.env.PORT}/${res.link}`
-        return res;
+        return `http://localhost:${process.env.PORT}/${res.link}`
       } else {
         return 'status changed!';
       }
@@ -106,7 +105,7 @@ export class FormService {
     try {
       const form = await Form.findByPk(formId);
       if (form.link) {
-        return form.link;
+        return `http://localhost:${process.env.PORT}/${form.link}`;
       } else {
         return `Form Link of id ${formId} is not availabel!`;
       }

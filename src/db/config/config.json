@@ -5,6 +5,5 @@
     "database": "feedbackQuestionnaire",
     "host": "localhost",
     "dialect": "postgres"
-  },
-  "Name":"zishan"
+  }
 }

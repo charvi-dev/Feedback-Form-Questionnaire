@@ -36,13 +36,13 @@ export class SubmissionService {
       const formattedData = await Promise.all(submissions.map(async submission => ({
         submissionId: submission.id,
         formId: submission.formId,
+        submittedOn:submission.submissionDate,
          questions: await Promise.all(submission.formResponse.map(async response => {
           const question = await Question.findByPk(response.questionId);
           return {
             questionId: question.id,
             text: question.questionDescription,
             response: response.response,
-            submittedOn:submission.submissionDate
           };
         }))
       })));

@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   ParseIntPipe,
   ParseUUIDPipe,
@@ -37,7 +38,7 @@ export class AppController {
         return result;
       }
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new NotFoundException();
     }
   }
 }

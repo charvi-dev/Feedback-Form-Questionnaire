@@ -13,12 +13,12 @@ export class QuestionService {
       type: questionDetails.type,
     };
     try {
-      const question = await Question.create(data);
       if (
-        question.type === 'multiple choice' ||
-        question.type === 'single choice'
+        data.type === 'multiple choice' ||
+        data.type === 'single choice'
       ) {
         if (questionDetails.optionList && questionDetails.optionList.length) {
+          const question = await Question.create(data);
           questionDetails.optionList.forEach(async (option) => {
             await Option.create({
               questionId: question.id,
@@ -28,8 +28,9 @@ export class QuestionService {
         } else {
           return 'Option List should be given for multiple and single choice';
         }
+      }else{
+        await Question.create(data);
       }
-
       return 'Question added successfully';
     } catch (error) {
       throw new InternalServerErrorException();
@@ -39,7 +40,7 @@ export class QuestionService {
   async findAll(formId: number) {
     try {
       let result = [];
-      let allQuestions = await Question.findAll({ where: { formId: formId } });
+      let allQuestions = await Question.findAll({ where: { formId: formId },order:[['id', 'ASC']] });
 
       for (let i = 0; i < allQuestions.length; i++) {
         let allOptions = null;
