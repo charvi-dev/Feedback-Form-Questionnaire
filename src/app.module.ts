@@ -22,16 +22,17 @@ import { Option } from './db/models/option.model';
 import { Submission } from './db/models/submission.model';
 import { Question } from './db/models/question.model';
 import { Form } from './db/models/form.model';
+import { Dialect } from 'sequelize';
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
-      dialect: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'admin',
-      database: 'feedbackQuestionnaire',
+      dialect: process.env.DB_DIALECT as Dialect ,
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       autoLoadModels: true,
       synchronize: false,
       models: [User, Form, Question, Submission, Option],

@@ -28,7 +28,7 @@ export class UserguardGuard implements CanActivate {
 
     try {
       const decoded = jwt.verify(token, 'charvisalonishamudro');
-      request.user = decoded;
+      request.body["user"] = decoded;
       return true;
     } catch (error) {
       throw new ForbiddenException();

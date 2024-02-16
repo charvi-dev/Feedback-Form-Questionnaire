@@ -6,6 +6,9 @@ import {
 import { formDetailsDto } from './dto/formDetails.dto';
 import { UpdateFormDto } from './dto/updateform.dto';
 import { Form } from 'src/db/models/form.model';
+import { v4 as uuidv4 } from 'uuid';
+import { link } from 'fs';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class FormService {
@@ -33,9 +36,9 @@ export class FormService {
     }
   }
 
-  async findOne(id: number) {
+  async findbyLink(uuid: uuidv4) {
     try {
-      const res = await Form.findOne({ where: { id } });
+      const res = await Form.findOne({ where: { link:uuid } });
       return res;
     } catch (error) {
       throw new InternalServerErrorException();
@@ -43,7 +46,6 @@ export class FormService {
   }
 
   async updateStatus(id: number, status: string) {
-    let shareableLink = `http://localhost:3000/${id}`;
     try {
       if (status == 'published') {
         await Form.update(
@@ -51,23 +53,25 @@ export class FormService {
             status,
             publishedDate: new Date(),
             closedDate: null,
-            link: shareableLink,
+            link: uuidv4(),
           },
           { where: { id } },
         );
       } else if (status == 'draft') {
         await Form.update(
-          { status, publishedDate: null, closedDate: null, link: null },
+          { status, publishedDate: null, closedDate: null},
           { where: { id } },
         );
       } else if (status == 'closed') {
         await Form.update(
-          { status, closedDate: new Date() },
+          { status, closedDate: new Date(),link:null },
           { where: { id } },
         );
       }
       if (status === 'published') {
-        return shareableLink;
+        const res = (await Form.findByPk(id));
+        return `localhost:${process.env.PORT}/${res.link}`
+        return res;
       } else {
         return 'status changed!';
       }
@@ -104,7 +108,7 @@ export class FormService {
       if (form.link) {
         return form.link;
       } else {
-        return `Form of id ${formId} is not published!`;
+        return `Form Link of id ${formId} is not availabel!`;
       }
     } catch (error) {
       throw new InternalServerErrorException();

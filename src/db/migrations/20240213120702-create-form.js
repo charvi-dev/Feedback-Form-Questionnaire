@@ -38,8 +38,9 @@ module.exports = {
           allowNull: true,
         },
         link: {
-          type: Sequelize.STRING,
+          type: Sequelize.UUID,
           allowNull: true,
+          unique:true
         },
         createdAt: {
           type: Sequelize.DATE,

@@ -40,8 +40,10 @@ export class QuestionService {
     try {
       let result = [];
       let allQuestions = await Question.findAll({ where: { formId: formId } });
+
       for (let i = 0; i < allQuestions.length; i++) {
         let allOptions = null;
+
         if (
           allQuestions[i]['type'] === 'multiple choice' ||
           allQuestions[i]['type'] === 'single choice'
@@ -51,14 +53,15 @@ export class QuestionService {
             attributes: ['id', 'optionText'],
           });
         }
+
         let questionDetails = {};
         if (allOptions) {
-          questionDetails['QuestionId'] = allOptions[i]['id'];
+          questionDetails['QuestionId'] = allQuestions[i]['id'];
           questionDetails['Question'] = allQuestions[i]['questionDescription'];
           questionDetails['Type'] = allQuestions[i]['type'];
           questionDetails['Option'] = allOptions;
         } else {
-          questionDetails['QuestionId'] = allOptions[i]['id'];
+          questionDetails['QuestionId'] = allQuestions[i]['id'];
           questionDetails['Question'] = allQuestions[i]['questionDescription'];
           questionDetails['Type'] = allQuestions[i]['type'];
         }
@@ -83,7 +86,12 @@ export class QuestionService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  async remove(id: number) {
+    try {
+      await Question.destroy({where:{id:id}});
+      return `Question of Id ${id} is deleted!`
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }

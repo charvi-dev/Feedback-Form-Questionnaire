@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { SubmissionService } from './submission.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
+
 
 @Controller('submission')
 export class SubmissionController {
@@ -12,12 +20,7 @@ export class SubmissionController {
   }
 
   @Get('/:formId')
-  findAll(@Param('formId') formId: string) {
-    return this.submissionService.findAll(+formId);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.submissionService.remove(+id);
+  findAll(@Param('formId',ParseIntPipe) formId: number) {
+    return this.submissionService.findAll(formId);
   }
 }

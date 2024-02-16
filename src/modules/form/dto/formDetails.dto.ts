@@ -1,10 +1,9 @@
-import { IsEnum, IsInt, Length } from 'class-validator';
+import { IsEnum,Length } from 'class-validator';
 
 export class formDetailsDto {
   @Length(5, 255)
   title: string;
 
-  @IsInt()
   userId: number;
 
   @Length(10, 255)

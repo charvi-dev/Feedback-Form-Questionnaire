@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { FormService } from './form.service';
 import { formDetailsDto } from './dto/formDetails.dto';
@@ -21,25 +22,10 @@ import { UserguardGuard } from '../user/userguard.guard';
 export class FormController {
   constructor(private readonly formService: FormService) {}
 
-  @Post('/')
-  create(@Body(new ValidationPipe()) formDetails: formDetailsDto) {
-    return this.formService.create(formDetails);
-  }
-
-  @Get('/')
-  findAll(@Query('userId') userId: number) {
-    return this.formService.findAll(userId);
-  }
-
-  @Get('/link')
-  getFormLink(@Query('formId') formId: number) {
-    return this.formService.getFormLink(formId);
-  }
-
-  @Put(':id/updateStatus')
+  @Put('/updateStatus/:id')
   updateStatus(
-    @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe()) updateFormDetails: UpdateFormDto,
+    @Param('id',ParseIntPipe) id:number
   ) {
     return this.formService.updateStatus(id, updateFormDetails.status);
   }
@@ -55,5 +41,21 @@ export class FormController {
   @Delete('/:id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.formService.remove(id);
+  }
+
+  @Post('/')
+  create(@Body(new ValidationPipe()) formDetails: formDetailsDto,@Req() req:Request) {
+    formDetails.userId=req.body["user"]["id"];
+    return this.formService.create(formDetails);
+  }
+
+  @Get('/getAll')
+  findAll(@Req() req:Request) {
+    return this.formService.findAll(req.body["user"]["id"])
+  }
+
+  @Get('/link')
+  getFormLink(@Query('formId') formId: number) {
+    return this.formService.getFormLink(formId);
   }
 }

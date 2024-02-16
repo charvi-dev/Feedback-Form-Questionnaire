@@ -14,6 +14,10 @@ module.exports = {
         allowNull: false,
         references: { model: 'form', key: 'id' },
       },
+      submissionDate:{
+        type:Sequelize.DATE,
+        allowNull:false,
+      },
       formResponse:{
         type:Sequelize.JSON,
         allowNull:false
