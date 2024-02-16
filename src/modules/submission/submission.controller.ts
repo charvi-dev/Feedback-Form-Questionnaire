@@ -21,12 +21,10 @@ export class SubmissionController {
   }
 
   @Get('/:formId')
+  
   findAll(@Param('formId') formId: string) {
     return this.submissionService.findAll(+formId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.submissionService.remove(+id);
-  }
+  
 }

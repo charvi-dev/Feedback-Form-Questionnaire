@@ -18,7 +18,7 @@ import { QuestionModule } from './modules/question/question.module';
 import { SubmissionModule } from './modules/submission/submission.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './db/models/user.model';
-import { Type } from './db/models/type.model';
+
 import { Option } from './db/models/option.model';
 import { Submission } from './db/models/submission.model';
 import { Question } from './db/models/question.model';
@@ -35,7 +35,7 @@ import { Form } from './db/models/form.model';
       database: 'feedbackQuestionnaire',
       autoLoadModels: true,
       synchronize: false,
-      models: [User, Form, Type, Question, Submission, Option],
+      models: [User, Form,  Question, Submission, Option],
     }),
     UserModule,
     FormModule,
