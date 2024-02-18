@@ -25,6 +25,11 @@ export class SubmissionController {
   findAll(@Param('formId') formId: string) {
     return this.submissionService.findAll(+formId);
   }
+  @Get(':formId/submissions/:submissionId')
+  
+  findByPk(@Param('formId') formId: string,@Param('submissionId') submissionId:string) {
+    return this.submissionService.findByPk(+formId,+submissionId);
+  }
 
   
 }
