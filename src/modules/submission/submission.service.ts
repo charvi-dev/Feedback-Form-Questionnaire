@@ -25,6 +25,24 @@ export class SubmissionService {
      
   }
  
+  async formatSubmission(formResponse: any[]) {
+    return Promise.all(formResponse.map(async response => {
+      const question = await Question.findByPk(response.questionId);
+      return {
+        questionId: question.id,
+        text: question.questionDescription,
+        response: response.response
+      };
+    }));
+  }
+
+  async formatSubmissionData(submission: Submission) {
+    return {
+      submissionId: submission.id,
+      formId: submission.formId,
+      questions: await this.formatSubmission(submission.formResponse)
+    };
+  }
  
   async findAll(formId: number) {
     try {
@@ -57,9 +75,6 @@ export class SubmissionService {
       const submission = await Submission.findOne({
         where: { formId: formId, id: submissionId },
       });
-
-     
-
       return this.formatSubmissionData(submission);
     } catch (error) {
       throw new BadRequestException();
