@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -10,11 +11,24 @@ import { userDetails } from './dto/userDetails.dto';
 
 @Injectable()
 export class UserService {
-  private hashPassword(password: string) {
-    return bcrypt.hash(password, 10);
+  // private async hashPassword(password: string) {
+  //   return bcrypt.hash(password, 10);
+  // }
+  
+
+  async hashPassword(password: string): Promise<string> {
+    try {
+      return await bcrypt.hash(password, 10);
+    } catch (error) {
+      console.error('Error during password hashing:', error);
+      throw new Error('Failed to hash password');
+    }
   }
 
   async signUp(signUpDetails: userDetails) {
+    if(!signUpDetails.userName || !signUpDetails.password) {
+      throw new Error('Invalid user details');
+    }
     try {
       const hashedPassword = await this.hashPassword(signUpDetails.password);
       const res = await User.create({
@@ -23,9 +37,12 @@ export class UserService {
       });
       return res;
     } catch (error) {
-      throw new BadRequestException(error.errors);
+      // throw new Error('Invalid user details');
+   
+      throw new InternalServerErrorException();
     }
   }
+
   async login(loginDetails: userDetails) {
     try {
       const stored = await User.findOne({
