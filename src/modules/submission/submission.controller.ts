@@ -26,4 +26,6 @@ export class SubmissionController {
   findAll(@Param('formId',ParseIntPipe) formId: number) {
     return this.submissionService.findAll(formId);
   }
+
+  
 }
