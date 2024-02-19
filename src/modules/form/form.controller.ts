@@ -13,7 +13,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { FormService } from './form.service';
-import { formDetailsDto } from './dto/formDetails.dto';
+import { FormDetailsDto } from './dto/formDetails.dto';
 import { UpdateFormDto } from './dto/updateform.dto';
 import { UserguardGuard } from '../user/userguard.guard';
 
@@ -44,7 +44,7 @@ export class FormController {
   }
 
   @Post('/')
-  create(@Body(new ValidationPipe()) formDetails: formDetailsDto,@Req() req:Request) {
+  create(@Body(new ValidationPipe()) formDetails: FormDetailsDto,@Req() req:Request) {
     formDetails.userId=req.body["user"]["id"];
     return this.formService.create(formDetails);
   }

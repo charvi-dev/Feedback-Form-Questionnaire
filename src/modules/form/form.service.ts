@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { Form } from 'src/db/models/form.model';
 import { v4 as uuidv4 } from 'uuid';
-import { formDetailsDto } from './dto/formDetails.dto';
+import { FormDetailsDto } from './dto/formDetails.dto';
 import { UpdateFormDto } from './dto/updateform.dto';
 
 @Injectable()
 export class FormService {
-  async create(formDetails: formDetailsDto) {
+  async create(formDetails: FormDetailsDto) {
     const data = {
       title: formDetails.title,
       description: formDetails.description,
