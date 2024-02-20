@@ -4,8 +4,8 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class UserguardGuard implements CanActivate {
@@ -28,11 +28,10 @@ export class UserguardGuard implements CanActivate {
 
     try {
       const decoded = jwt.verify(token, 'charvisalonishamudro');
-      request.body["user"] = decoded;
+      request.body['user'] = decoded;
       return true;
     } catch (error) {
       throw new ForbiddenException();
-      return false;
     }
   }
 }
