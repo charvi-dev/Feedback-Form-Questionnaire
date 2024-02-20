@@ -294,5 +294,4 @@ describe('Form Service', () => {
     }
     expect(Form.destroy).toHaveBeenCalledWith({ where: { id } });
   });
-
 });
