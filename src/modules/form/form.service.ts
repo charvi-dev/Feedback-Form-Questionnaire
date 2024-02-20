@@ -89,13 +89,18 @@ export class FormService {
             ? updateFormDetails.description
             : formStoredData.description,
         };
-        const result = await Form.update(updatedData, { where: { id: id } });
+        await Form.update(updatedData, { where: { id: id } });
         return `Form with id ${id} updated successfully`;
       } else {
         throw new NotFoundException();
       }
     } catch (error) {
-      throw new InternalServerErrorException();
+      if(error["message"]==="Not Found"){
+        throw new NotFoundException();
+      }else{
+        throw new InternalServerErrorException();
+      }
+      
     }
   }
 
@@ -105,7 +110,7 @@ export class FormService {
       if (form.link) {
         return `http://localhost:${process.env.PORT}/${form.link}`;
       } else {
-        return `Form Link of id ${formId} is not availabel!`;
+        return `Form Link of id ${formId} is not available!`;
       }
     } catch (error) {
       throw new InternalServerErrorException();
