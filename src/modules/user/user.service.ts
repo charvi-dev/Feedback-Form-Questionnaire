@@ -11,16 +11,11 @@ import { userDetails } from './dto/userDetails.dto';
 
 @Injectable()
 export class UserService {
-  // private async hashPassword(password: string) {
-  //   return bcrypt.hash(password, 10);
-  // }
   
-
-  async hashPassword(password: string): Promise<string> {
+ async  hashPassword(password: string): Promise<string> {
     try {
       return await bcrypt.hash(password, 10);
     } catch (error) {
-      console.error('Error during password hashing:', error);
       throw new Error('Failed to hash password');
     }
   }
@@ -30,6 +25,7 @@ export class UserService {
       throw new Error('Invalid user details');
     }
     try {
+      
       const hashedPassword = await this.hashPassword(signUpDetails.password);
       const res = await User.create({
         userName: signUpDetails.userName,
@@ -37,7 +33,7 @@ export class UserService {
       });
       return res;
     } catch (error) {
-      // throw new Error('Invalid user details');
+     
    
       throw new InternalServerErrorException();
     }
@@ -57,7 +53,7 @@ export class UserService {
           userName: stored.userName,
           password: stored.password,
         };
-        const token = await jwt.sign(payload, 'charvisalonishamudro', {
+        const token =  jwt.sign(payload, 'charvisalonishamudro', {
           expiresIn: '1h',
         });
         return token;
@@ -69,35 +65,39 @@ export class UserService {
     }
   }
 
-  async updateDetails(updateDetails: userDetails, jwtToken: string) {
-    try {
-      const id = this.getUserIdFromToken(jwtToken);
 
-      const user = await User.findByPk(id);
-
-      if (updateDetails.userName) {
-        user.userName = updateDetails.userName;
-      }
-
-      if (updateDetails.password) {
-        const hashedPassword = await this.hashPassword(updateDetails.password);
-        user.password = hashedPassword;
-      }
-
-      await user.save();
-
-      return 'User details updated successfully';
-    } catch (error) {
-      throw new NotFoundException();
-    }
-  }
-
-  getUserIdFromToken(token: string): number {
-    try {
-      const decodedToken: any = jwt.verify(token, 'charvisalonishamudro');
-      return decodedToken.id;
-    } catch (error) {
-      throw new Error('Invalid token');
-    }
+getUserIdFromToken(token: string): number { 
+  try {
+    const decodedToken: any = jwt.verify(token, 'charvisalonishamudro');
+    return decodedToken.id;
+  } catch (error) {
+    throw new Error('Invalid token');
   }
 }
+
+async updateDetails(updateDetails: userDetails, jwtToken: string) {
+  try {
+    const id = this.getUserIdFromToken(jwtToken);
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    if (updateDetails.userName) {
+      user.userName = updateDetails.userName;
+    }
+
+    if (updateDetails.password) {
+      const hashedPassword = await bcrypt.hash(updateDetails.password, 10);
+      user.password = hashedPassword;
+    }
+
+    await user.save();
+
+    return 'User details updated successfully';
+  } catch (error) {
+    throw new NotFoundException();
+  }
+}
+}
+ 
