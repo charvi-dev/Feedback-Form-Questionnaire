@@ -25,7 +25,7 @@ export class FormController {
   @Put('/updateStatus/:id')
   updateStatus(
     @Body(new ValidationPipe()) updateFormDetails: UpdateFormDto,
-    @Param('id',ParseIntPipe) id:number
+    @Param('id', ParseIntPipe) id: number,
   ) {
     return this.formService.updateStatus(id, updateFormDetails.status);
   }
@@ -44,14 +44,17 @@ export class FormController {
   }
 
   @Post('/')
-  create(@Body(new ValidationPipe()) formDetails: FormDetailsDto,@Req() req:Request) {
-    formDetails.userId=req.body["user"]["id"];
+  create(
+    @Body(new ValidationPipe()) formDetails: FormDetailsDto,
+    @Req() req: Request,
+  ) {
+    formDetails.userId = req.body['user']['id'];
     return this.formService.create(formDetails);
   }
 
   @Get('/getAll')
-  findAll(@Req() req:Request) {
-    return this.formService.findAll(req.body["user"]["id"])
+  findAll(@Req() req: Request) {
+    return this.formService.findAll(req.body['user']['id']);
   }
 
   @Get('/link')

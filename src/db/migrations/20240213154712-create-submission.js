@@ -13,6 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: { model: 'form', key: 'id' },
+        onDelete:'CASCADE'
       },
       submissionDate:{
         type:Sequelize.DATE,

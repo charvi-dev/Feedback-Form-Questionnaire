@@ -26,7 +26,7 @@ export class QuestionController {
   }
 
   @Get('/all')
-  findAll(@Query('formId',ParseIntPipe) formId: number) {
+  findAll(@Query('formId', ParseIntPipe) formId: number) {
     return this.questionService.findAll(formId);
   }
 
@@ -39,7 +39,7 @@ export class QuestionController {
   }
 
   @Delete('/:id')
-  remove(@Param('id',ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.questionService.remove(id);
   }
 }

@@ -8,7 +8,7 @@ export class OptionService {
     try {
       await Option.update(
         { optionText: updateOptionDto.optionText },
-        { where: { id: id } },
+        { where: { id } },
       );
       return `option of id ${id} is updated`;
     } catch (error) {

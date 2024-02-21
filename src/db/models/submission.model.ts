@@ -3,7 +3,7 @@ import { Form } from './form.model';
 
 @Table({ tableName: 'submission' })
 export class Submission extends Model {
-  @Column({ references: { model: Form, key: 'id' } })
+  @Column({ references: { model: Form, key: 'id' }, onDelete: 'CASCADE' })
   formId: number;
 
   @Column

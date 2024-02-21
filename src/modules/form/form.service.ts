@@ -7,6 +7,7 @@ import { Form } from 'src/db/models/form.model';
 import { v4 as uuidv4 } from 'uuid';
 import { FormDetailsDto } from './dto/formDetails.dto';
 import { UpdateFormDto } from './dto/updateform.dto';
+import { STATUS } from 'src/constants';
 
 @Injectable()
 export class FormService {
@@ -15,7 +16,7 @@ export class FormService {
       title: formDetails.title,
       description: formDetails.description,
       userId: formDetails.userId,
-      status: 'draft',
+      status: STATUS.DRAFT,
     };
     try {
       const res = await Form.create(data);
@@ -27,7 +28,10 @@ export class FormService {
 
   async findAll(userId: number) {
     try {
-      const res = await Form.findAll({ where: { userId: userId },order:[['id', 'ASC']]});
+      const res = await Form.findAll({
+        where: { userId: userId },
+        order: [['id', 'ASC']],
+      });
       return res;
     } catch (error) {
       throw new InternalServerErrorException();
@@ -36,7 +40,7 @@ export class FormService {
 
   async findbyLink(uuid: uuidv4) {
     try {
-      const res = await Form.findOne({ where: { link:uuid } });
+      const res = await Form.findOne({ where: { link: uuid } });
       return res;
     } catch (error) {
       throw new InternalServerErrorException();
@@ -45,7 +49,7 @@ export class FormService {
 
   async updateStatus(id: number, status: string) {
     try {
-      if (status == 'published') {
+      if (status == STATUS.PUBLISHED) {
         await Form.update(
           {
             status,
@@ -55,20 +59,20 @@ export class FormService {
           },
           { where: { id } },
         );
-      } else if (status == 'draft') {
+      } else if (status === STATUS.DRAFT) {
         await Form.update(
-          { status, publishedDate: null, closedDate: null},
+          { status, publishedDate: null, closedDate: null },
           { where: { id } },
         );
-      } else if (status == 'closed') {
+      } else if (status == STATUS.CLOSED) {
         await Form.update(
-          { status, closedDate: new Date(),link:null },
+          { status, closedDate: new Date(), link: null },
           { where: { id } },
         );
       }
-      if (status === 'published') {
-        const res = (await Form.findByPk(id));
-        return `http://localhost:${process.env.PORT}/${res.link}`
+      if (status === STATUS.PUBLISHED) {
+        const res = await Form.findByPk(id);
+        return `http://localhost:${process.env.PORT}/${res.link}`;
       } else {
         return 'status changed!';
       }
@@ -82,12 +86,9 @@ export class FormService {
       const formStoredData = await Form.findByPk(id);
       if (formStoredData) {
         const updatedData = {
-          title: updateFormDetails.title
-            ? updateFormDetails.title
-            : formStoredData.title,
-          description: updateFormDetails.description
-            ? updateFormDetails.description
-            : formStoredData.description,
+          title: updateFormDetails.title ?? formStoredData.title,
+          description:
+            updateFormDetails.description ?? formStoredData.description,
         };
         await Form.update(updatedData, { where: { id: id } });
         return `Form with id ${id} updated successfully`;
@@ -95,12 +96,11 @@ export class FormService {
         throw new NotFoundException();
       }
     } catch (error) {
-      if(error["message"]==="Not Found"){
+      if (error['message'] === 'Not Found') {
         throw new NotFoundException();
-      }else{
+      } else {
         throw new InternalServerErrorException();
       }
-      
     }
   }
 
@@ -122,7 +122,7 @@ export class FormService {
       await Form.destroy({ where: { id: id } });
       return `Form of id ${id} is deleted!`;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error['parent']);
     }
   }
 }

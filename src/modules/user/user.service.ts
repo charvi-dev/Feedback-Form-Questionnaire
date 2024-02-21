@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -11,8 +11,7 @@ import { userDetails } from './dto/userDetails.dto';
 
 @Injectable()
 export class UserService {
-  
- async  hashPassword(password: string): Promise<string> {
+  async hashPassword(password: string): Promise<string> {
     try {
       return await bcrypt.hash(password, 10);
     } catch (error) {
@@ -21,7 +20,7 @@ export class UserService {
   }
 
   async signUp(signUpDetails: userDetails) {
-    if(!signUpDetails.userName || !signUpDetails.password) {
+    if (!signUpDetails.userName || !signUpDetails.password) {
       throw new Error('Invalid user details');
     }
     try {
@@ -32,7 +31,7 @@ export class UserService {
       });
       return res;
     } catch (error) {
-      throw new InternalServerErrorException(error["errors"]);
+      throw new InternalServerErrorException(error['errors']);
     }
   }
 
@@ -50,52 +49,49 @@ export class UserService {
           userName: stored.userName,
           password: stored.password,
         };
-        const token =  jwt.sign(payload, 'charvisalonishamudro', {
+        const token = jwt.sign(payload, 'charvisalonishamudro', {
           expiresIn: '1h',
         });
-        return {token};
+        return { token };
       } else {
         return 'Wrong userName or password';
       }
     } catch (error) {
-      
       return { error };
     }
   }
 
+  getUserIdFromToken(token: string): number {
+    try {
+      const decodedToken: any = jwt.verify(token, 'charvisalonishamudro');
+      return decodedToken.id;
+    } catch (error) {
+      throw new Error('Invalid token');
+    }
+  }
 
-getUserIdFromToken(token: string): number { 
-  try {
-    const decodedToken: any = jwt.verify(token, 'charvisalonishamudro');
-    return decodedToken.id;
-  } catch (error) {
-    throw new Error('Invalid token');
+  async updateDetails(updateDetails: userDetails, jwtToken: string) {
+    try {
+      const id = this.getUserIdFromToken(jwtToken);
+      const user = await User.findByPk(id);
+      if (!user) {
+        throw new NotFoundException();
+      }
+
+      if (updateDetails.userName) {
+        user.userName = updateDetails.userName;
+      }
+
+      if (updateDetails.password) {
+        const hashedPassword = await bcrypt.hash(updateDetails.password, 10);
+        user.password = hashedPassword;
+      }
+
+      await user.save();
+
+      return 'User details updated successfully';
+    } catch (error) {
+      throw new NotFoundException(error['errors']);
+    }
   }
 }
-
-async updateDetails(updateDetails: userDetails, jwtToken: string) {
-  try {
-    const id = this.getUserIdFromToken(jwtToken);
-    const user = await User.findByPk(id);
-    if (!user) {
-      throw new NotFoundException();
-    }
-
-    if (updateDetails.userName) {
-      user.userName = updateDetails.userName;
-    }
-
-    if (updateDetails.password) {
-      const hashedPassword = await bcrypt.hash(updateDetails.password, 10);
-      user.password = hashedPassword;
-    }
-
-    await user.save();
-
-    return 'User details updated successfully';
-  } catch (error) {
-    throw new NotFoundException(error["errors"]);
-  }
-}
-}
- 
