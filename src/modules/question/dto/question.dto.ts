@@ -13,7 +13,7 @@ export class QuestionDto {
       'single-line answer',
       'multi-line answer',
     ],
-    { message: 'This type is not availabel' },
+    { message: 'This type is not available' },
   )
   type: string;
   optionList: string[];

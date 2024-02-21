@@ -1,4 +1,4 @@
-import { UserguardGuard } from '../userguard.guard';
+import { UserguardGuard } from '../user.guard';
 
 describe('UserguardGuard', () => {
   it('should be defined', () => {
