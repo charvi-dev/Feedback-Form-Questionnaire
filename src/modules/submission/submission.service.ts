@@ -61,10 +61,15 @@ export class SubmissionService {
   }
 
   async findByPk(formId: number, submissionId: number) {
+    
+   
     try {
       const submission = await Submission.findOne({
         where: { formId: formId, id: submissionId },
       });
+      if (!submission) {
+        throw new BadRequestException('Submission not found');
+      }
 
      
 
