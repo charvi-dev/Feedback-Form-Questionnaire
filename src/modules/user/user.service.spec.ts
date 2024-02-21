@@ -98,7 +98,7 @@ describe('UserService', () => {
         'charvisalonishamudro',
         { expiresIn: '1h' }
       );
-      expect(token).toBe('mockToken');
+      expect(token).toEqual({token:'mockToken'});
     });
 
     it('should return an error message if login credentials are incorrect', async () => {

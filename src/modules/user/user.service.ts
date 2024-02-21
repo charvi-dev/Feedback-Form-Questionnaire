@@ -25,7 +25,6 @@ export class UserService {
       throw new Error('Invalid user details');
     }
     try {
-      
       const hashedPassword = await this.hashPassword(signUpDetails.password);
       const res = await User.create({
         userName: signUpDetails.userName,
@@ -33,9 +32,7 @@ export class UserService {
       });
       return res;
     } catch (error) {
-     
-   
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error["errors"]);
     }
   }
 
@@ -56,7 +53,7 @@ export class UserService {
         const token =  jwt.sign(payload, 'charvisalonishamudro', {
           expiresIn: '1h',
         });
-        return token;
+        return {token};
       } else {
         return 'Wrong userName or password';
       }
@@ -97,7 +94,7 @@ async updateDetails(updateDetails: userDetails, jwtToken: string) {
 
     return 'User details updated successfully';
   } catch (error) {
-    throw new NotFoundException();
+    throw new NotFoundException(error["errors"]);
   }
 }
 }

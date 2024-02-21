@@ -47,7 +47,7 @@ describe('UserController', () => {
         userName: 'Charvi',
         password: 'Charvi@3107'
       };
-      const loginSpy = jest.spyOn(userService, 'login').mockResolvedValueOnce('');
+      const loginSpy = jest.spyOn(userService, 'login').mockResolvedValueOnce({token:""});
 
       await controller.login(mockUserDetails);
 
