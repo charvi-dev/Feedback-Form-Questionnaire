@@ -16,11 +16,12 @@ export class SubmissionService {
 
       const res = await Submission.create({
         formId: createSubmissionDto.formId,
+        submissionDate:new Date(),
         formResponse: createSubmissionDto.formResponse
       })
       return res;
     } catch (error) {
-      throw new BadRequestException()
+      throw new BadRequestException(error)
     }
 
   }
@@ -42,6 +43,7 @@ export class SubmissionService {
     return {
       submissionId: submission.id,
       formId: submission.formId,
+      submittedOn:submission.submissionDate,
       questions: await this.formatSubmission(submission.formResponse)
     };
   }
