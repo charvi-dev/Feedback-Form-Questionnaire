@@ -16,4 +16,3 @@ describe('CreateSubmissionDto', () => {
     expect(submissionDto.formResponse).toEqual(formResponse);
   });
 });
-

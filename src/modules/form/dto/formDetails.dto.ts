@@ -1,4 +1,4 @@
-import { IsEnum,Length } from 'class-validator';
+import { IsEnum, Length } from 'class-validator';
 
 export class FormDetailsDto {
   @Length(5, 255)

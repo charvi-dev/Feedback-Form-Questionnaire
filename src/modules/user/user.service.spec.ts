@@ -1,9 +1,13 @@
-import { UserService } from "./user.service";
+import { UserService } from './user.service';
 import { User } from 'src/db/models/user.model';
-import { userDetails } from "./dto/userDetails.dto";
+import { userDetails } from './dto/userDetails.dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 jest.mock('src/db/models/user.model', () => ({
   User: {
@@ -12,8 +16,6 @@ jest.mock('src/db/models/user.model', () => ({
     findByPk: jest.fn(),
   },
 }));
-
-
 
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
@@ -39,7 +41,7 @@ describe('UserService', () => {
         userName: 'Charvi',
         password: 'Charvi@3107',
       };
-      const hashedPassword = '1123454544@###mmll'; 
+      const hashedPassword = '1123454544@###mmll';
       (bcrypt.hash as jest.Mock).mockResolvedValue(hashedPassword);
       (User.create as jest.Mock).mockResolvedValue(userDetailsData);
 
@@ -61,7 +63,9 @@ describe('UserService', () => {
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
       (User.create as jest.Mock).mockRejectedValue(new BadRequestException());
 
-      await expect(service.signUp(userDetailsData)).rejects.toThrow(InternalServerErrorException);
+      await expect(service.signUp(userDetailsData)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
 
     it('should handle invalid user details', async () => {
@@ -70,7 +74,9 @@ describe('UserService', () => {
         password: 'Charvi@3107',
       };
 
-      await expect(service.signUp(userDetailsData)).rejects.toThrow('Invalid user details');
+      await expect(service.signUp(userDetailsData)).rejects.toThrow(
+        'Invalid user details',
+      );
     });
   });
 
@@ -91,14 +97,23 @@ describe('UserService', () => {
 
       const token = await service.login(loginDetails);
 
-      expect(User.findOne).toHaveBeenCalledWith({ where: { userName: loginDetails.userName } });
-      expect(bcrypt.compare).toHaveBeenCalledWith(loginDetails.password, storedUser.password);
-      expect(jwt.sign).toHaveBeenCalledWith(
-        { id: storedUser.id, userName: storedUser.userName, password: storedUser.password },
-        'charvisalonishamudro',
-        { expiresIn: '1h' }
+      expect(User.findOne).toHaveBeenCalledWith({
+        where: { userName: loginDetails.userName },
+      });
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        loginDetails.password,
+        storedUser.password,
       );
-      expect(token).toEqual({token:'mockToken'});
+      expect(jwt.sign).toHaveBeenCalledWith(
+        {
+          id: storedUser.id,
+          userName: storedUser.userName,
+          password: storedUser.password,
+        },
+        'charvisalonishamudro',
+        { expiresIn: '1h' },
+      );
+      expect(token).toEqual({ token: 'mockToken' });
     });
 
     it('should return an error message if login credentials are incorrect', async () => {
@@ -110,7 +125,9 @@ describe('UserService', () => {
 
       const result = await service.login(loginDetails);
 
-      expect(User.findOne).toHaveBeenCalledWith({ where: { userName: loginDetails.userName } });
+      expect(User.findOne).toHaveBeenCalledWith({
+        where: { userName: loginDetails.userName },
+      });
       expect(bcrypt.compare).not.toHaveBeenCalled();
       expect(jwt.sign).not.toHaveBeenCalled();
       expect(result).toBe('Wrong userName or password');
@@ -124,22 +141,22 @@ describe('UserService', () => {
         password: 'newPassword',
       };
       const jwtToken = 'mockToken';
-   
 
-      jest.spyOn(service,'getUserIdFromToken').mockReturnValue(1)
+      jest.spyOn(service, 'getUserIdFromToken').mockReturnValue(1);
 
       const storedUser = {
         id: 1,
         userName: 'Charvi',
-     
-        password: '$2b$10$Nn.kmGdxHqkd9.GSvE5O.OxRe20vMVd2V.DG29Dy8lzi2qz3zfpz2',
+
+        password:
+          '$2b$10$Nn.kmGdxHqkd9.GSvE5O.OxRe20vMVd2V.DG29Dy8lzi2qz3zfpz2',
         save: jest.fn(),
       };
       (User.findByPk as jest.Mock).mockResolvedValue(storedUser);
       (bcrypt.hash as jest.Mock).mockResolvedValue('newHashedPassword');
-    
+
       const result = await service.updateDetails(updateDetails, jwtToken);
-    
+
       expect(User.findByPk).toHaveBeenCalledWith(storedUser.id);
       expect(bcrypt.hash).toHaveBeenCalledWith(updateDetails.password, 10);
       expect(storedUser.userName).toBe(updateDetails.userName);
@@ -147,9 +164,6 @@ describe('UserService', () => {
       expect(storedUser.save).toHaveBeenCalled();
       expect(result).toBe('User details updated successfully');
     });
-    
-
-    
 
     it('should throw NotFoundException if user is not found', async () => {
       const updateDetails: userDetails = {
@@ -159,12 +173,14 @@ describe('UserService', () => {
       const jwtToken = 'mockToken';
 
       const getUserIdFromTokenSpy = jest.spyOn(service, 'getUserIdFromToken');
-     
+
       getUserIdFromTokenSpy.mockReturnValue(1);
 
       (User.findByPk as jest.Mock).mockResolvedValue(null);
-    
-      await expect(service.updateDetails(updateDetails, jwtToken)).rejects.toThrow(NotFoundException);
+
+      await expect(
+        service.updateDetails(updateDetails, jwtToken),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -183,34 +199,39 @@ describe('UserService', () => {
 
     it('should throw an error if token is invalid', () => {
       const token = 'invalidToken';
-      (jwt.verify as jest.Mock).mockImplementation(() => { throw new Error('Invalid token') });
+      (jwt.verify as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
 
       expect(() => service.getUserIdFromToken(token)).toThrow('Invalid token');
     });
   });
-
 
   describe('hashPassword', () => {
     it('should hash the password successfully', async () => {
       const password = 'Charvi@3107';
       const expectedHashedPassword = '$2b$10$mockHashedPassword';
 
-      jest.spyOn(bcrypt, 'hash').mockImplementation(async () => expectedHashedPassword);
-   
+      jest
+        .spyOn(bcrypt, 'hash')
+        .mockImplementation(async () => expectedHashedPassword);
+
       const hashedPassword = await service.hashPassword(password);
-  
+
       expect(bcrypt.hash).toHaveBeenCalledWith(password, 10);
       expect(hashedPassword).toEqual(expectedHashedPassword);
     });
 
     it('should throw an error if password hashing fails', async () => {
       const password = 'testPassword';
-  
-   
-      jest.spyOn(bcrypt, 'hash').mockImplementation(() => { throw new Error('Failed to hash password'); });
-  
-      await expect(service.hashPassword(password)).rejects.toThrow('Failed to hash password');
+
+      jest.spyOn(bcrypt, 'hash').mockImplementation(() => {
+        throw new Error('Failed to hash password');
+      });
+
+      await expect(service.hashPassword(password)).rejects.toThrow(
+        'Failed to hash password',
+      );
     });
   });
-  });
-
+});

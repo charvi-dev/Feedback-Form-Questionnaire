@@ -3,7 +3,7 @@ import { FormController } from './form.controller';
 import { FormService } from './form.service';
 import { FormDetailsDto } from './dto/formDetails.dto';
 import { UpdateFormDto } from './dto/updateform.dto';
-import { NotFoundException } from '@nestjs/common';
+import { STATUS } from 'src/constants';
 
 describe('FormController', () => {
   let formController: FormController;
@@ -34,7 +34,7 @@ describe('FormController', () => {
   describe('updateStatus', () => {
     it('should update the status of a form', async () => {
       const id = 1;
-      const updateFormDetails: UpdateFormDto = { status: 'published' };
+      const updateFormDetails: UpdateFormDto = { status: STATUS.PUBLISHED };
 
       (formService.updateStatus as jest.Mock).mockResolvedValue(
         'Status updated successfully',
@@ -90,7 +90,7 @@ describe('FormController', () => {
         userId: 1,
         title: 'my title',
         description: 'my description',
-        status: 'draft',
+        status: STATUS.DRAFT,
         closedDate: null,
         publishedDate: null,
         link: null,

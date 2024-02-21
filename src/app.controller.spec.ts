@@ -4,17 +4,17 @@ import { FormService } from './modules/form/form.service';
 import { QuestionService } from './modules/question/question.service';
 import { NotFoundException } from '@nestjs/common';
 
-jest.mock('./modules/form/form.service',()=>({
-    FormService:{
-        findbyLink:jest.fn(),
-    }
-}))
+jest.mock('./modules/form/form.service', () => ({
+  FormService: {
+    findbyLink: jest.fn(),
+  },
+}));
 
-jest.mock('./modules/question/question.service',()=>({
-    QuestionService:{
-        findAll:jest.fn(),
-    }
-}))
+jest.mock('./modules/question/question.service', () => ({
+  QuestionService: {
+    findAll: jest.fn(),
+  },
+}));
 
 describe('AppController', () => {
   let appController: AppController;
@@ -56,7 +56,12 @@ describe('AppController', () => {
       };
       const questionsData = [
         { QuestionId: 1, Question: 'Question 1', Type: 'text' },
-        { QuestionId: 2, Question: 'Question 2', Type: 'single choice', Option: ['Option 1', 'Option 2'] },
+        {
+          QuestionId: 2,
+          Question: 'Question 2',
+          Type: 'single choice',
+          Option: ['Option 1', 'Option 2'],
+        },
       ];
       (formService.findbyLink as jest.Mock).mockResolvedValue(formData);
       (questionService.findAll as jest.Mock).mockResolvedValue(questionsData);
@@ -106,14 +111,20 @@ describe('AppController', () => {
       const uuid = '123e4567-e89b-12d3-a456-426614174000';
       (formService.findbyLink as jest.Mock).mockResolvedValue(null);
 
-      await expect(appController.showForm(uuid)).rejects.toThrow(NotFoundException);
+      await expect(appController.showForm(uuid)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw NotFoundException when an error occurs', async () => {
       const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      (formService.findbyLink as jest.Mock).mockRejectedValue(new Error('DB Error'));
+      (formService.findbyLink as jest.Mock).mockRejectedValue(
+        new Error('DB Error'),
+      );
 
-      await expect(appController.showForm(uuid)).rejects.toThrow(NotFoundException);
+      await expect(appController.showForm(uuid)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

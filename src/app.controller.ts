@@ -3,7 +3,7 @@ import {
   Get,
   NotFoundException,
   Param,
-  ParseUUIDPipe
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { FormService } from './modules/form/form.service';
@@ -21,17 +21,16 @@ export class AppController {
     try {
       let result = {};
       let formData = await this.formService.findbyLink(uuid);
-      result['Id']=formData.id;
+      result['Id'] = formData.id;
       result['Title'] = formData.title;
       result['Description'] = formData.description;
       result['status'] = formData.status;
       result['Questitons'] = await this.questionService.findAll(formData.id);
-      if(result['status']==='draft'){
-        return "Form Not Published!";
-      }else if(result['status']==='closed'){
-        return "Form is not accepting any responses now!"
-      }
-      else{
+      if (result['status'] === 'draft') {
+        return 'Form Not Published!';
+      } else if (result['status'] === 'closed') {
+        return 'Form is not accepting any responses now!';
+      } else {
         return result;
       }
     } catch (error) {

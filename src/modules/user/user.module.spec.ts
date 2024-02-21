@@ -25,6 +25,4 @@ describe('UserModule', () => {
     const service = module.get<UserService>(UserService);
     expect(service).toBeDefined();
   });
-
-
 });

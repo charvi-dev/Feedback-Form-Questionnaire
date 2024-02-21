@@ -2,13 +2,14 @@ import { Question } from 'src/db/models/question.model';
 import { QuestionService } from './question.service';
 import { Option } from 'src/db/models/option.model';
 import { InternalServerErrorException } from '@nestjs/common';
+import { QUESTION_TYPE } from 'src/constants';
 
 jest.mock('src/db/models/question.model', () => ({
   Question: {
     create: jest.fn(),
     findAll: jest.fn(),
     update: jest.fn(),
-    destroy:jest.fn()
+    destroy: jest.fn(),
   },
 }));
 
@@ -32,7 +33,7 @@ describe('Question Service', () => {
       const questionDetails = {
         formId: 1,
         questionDescription: 'Sample Question',
-        type: 'multiple choice',
+        type: QUESTION_TYPE.MULTIPLE_CHOICE,
         optionList: ['Option 1', 'Option 2'],
       };
 
@@ -49,7 +50,7 @@ describe('Question Service', () => {
       const questionDetails = {
         formId: 1,
         questionDescription: 'Sample Question',
-        type: 'multiple choice',
+        type: QUESTION_TYPE.MULTIPLE_CHOICE,
         optionList: [],
       };
 
@@ -63,7 +64,7 @@ describe('Question Service', () => {
       const questionDetails = {
         formId: 1,
         questionDescription: 'Sample Question',
-        type: 'text',
+        type: QUESTION_TYPE.SINGLE_LINE,
         optionList: null,
       };
       const result = await service.addQuestion(questionDetails);
@@ -74,7 +75,7 @@ describe('Question Service', () => {
       const questionDetails = {
         formId: 1,
         questionDescription: 'Sample Question',
-        type: 'multiple choice',
+        type: QUESTION_TYPE.MULTIPLE_CHOICE,
         optionList: ['Option 1', 'Option 2'],
       };
 
@@ -95,19 +96,19 @@ describe('Question Service', () => {
           id: 1,
           formId: 1,
           questionDescription: 'Question 1',
-          type: 'multiple choice',
+          type: QUESTION_TYPE.MULTIPLE_CHOICE,
         },
         {
           id: 2,
           formId: 1,
           questionDescription: 'Question 2',
-          type: 'single choice',
+          type: QUESTION_TYPE.SINGLE_CHOICE,
         },
         {
           id: 3,
           formId: 1,
           questionDescription: 'Question 3',
-          type: 'single-line answer',
+          type: QUESTION_TYPE.SINGLE_LINE,
         },
       ];
       const mockOptions = [
@@ -131,16 +132,20 @@ describe('Question Service', () => {
         {
           QuestionId: 1,
           Question: 'Question 1',
-          Type: 'multiple choice',
+          Type: QUESTION_TYPE.MULTIPLE_CHOICE,
           Option: mockOptions[0],
         },
         {
           QuestionId: 2,
           Question: 'Question 2',
-          Type: 'single choice',
+          Type: QUESTION_TYPE.SINGLE_CHOICE,
           Option: mockOptions[1],
         },
-        { QuestionId: 3, Question: 'Question 3', Type: 'single-line answer' },
+        {
+          QuestionId: 3,
+          Question: 'Question 3',
+          Type: QUESTION_TYPE.SINGLE_LINE,
+        },
       ]);
 
       expect(Question.findAll).toHaveBeenCalledWith({
@@ -153,8 +158,18 @@ describe('Question Service', () => {
     it('should return all questions without options', async () => {
       const formId = 1;
       const mockQuestions = [
-        { id: 1, formId: 1, questionDescription: 'Question 1', type: 'text' },
-        { id: 2, formId: 1, questionDescription: 'Question 2', type: 'text' },
+        {
+          id: 1,
+          formId: 1,
+          questionDescription: 'Question 1',
+          type: QUESTION_TYPE.SINGLE_LINE,
+        },
+        {
+          id: 2,
+          formId: 1,
+          questionDescription: 'Question 2',
+          type: QUESTION_TYPE.SINGLE_LINE,
+        },
       ];
       (Question.findAll as jest.Mock).mockResolvedValue(mockQuestions);
       (Option.findAll as jest.Mock).mockResolvedValue(null);
@@ -162,8 +177,16 @@ describe('Question Service', () => {
       const result = await service.findAll(formId);
 
       expect(result).toEqual([
-        { QuestionId: 1, Question: 'Question 1', Type: 'text' },
-        { QuestionId: 2, Question: 'Question 2', Type: 'text' },
+        {
+          QuestionId: 1,
+          Question: 'Question 1',
+          Type: QUESTION_TYPE.SINGLE_LINE,
+        },
+        {
+          QuestionId: 2,
+          Question: 'Question 2',
+          Type: QUESTION_TYPE.SINGLE_LINE,
+        },
       ]);
       expect(Question.findAll).toHaveBeenCalledWith({
         where: { formId },
@@ -176,7 +199,7 @@ describe('Question Service', () => {
       const formId = 1;
       (Question.findAll as jest.Mock).mockRejectedValue('error');
       try {
-        await service.findAll(1);
+        await service.findAll(formId);
       } catch (error) {
         expect(error).toBeInstanceOf(InternalServerErrorException);
       }
@@ -216,7 +239,7 @@ describe('Question Service', () => {
     });
   });
 
-  describe('remove',()=>{
+  describe('remove', () => {
     it('should delete the question with the provided ID', async () => {
       const id = 1;
       (Question.destroy as jest.Mock).mockResolvedValue(1);
@@ -227,13 +250,13 @@ describe('Question Service', () => {
 
     it('should throw InternalServerErrorException on error', async () => {
       const id = 1;
-      (Question.destroy as jest.Mock).mockRejectedValue("error");
+      (Question.destroy as jest.Mock).mockRejectedValue('error');
       try {
-        await service.remove(id)
+        await service.remove(id);
       } catch (error) {
         expect(error).toBeInstanceOf(InternalServerErrorException);
       }
       expect(Question.destroy).toHaveBeenCalledWith({ where: { id } });
     });
-  })
+  });
 });

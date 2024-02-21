@@ -4,7 +4,7 @@ import {
   Headers,
   Post,
   Put,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { userDetails } from './dto/userDetails.dto';
 import { UserService } from './user.service';

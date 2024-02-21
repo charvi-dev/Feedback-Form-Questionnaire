@@ -3,6 +3,7 @@ import { QuestionDto } from './dto/question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { Question } from 'src/db/models/question.model';
 import { Option } from 'src/db/models/option.model';
+import { QUESTION_TYPE } from 'src/constants';
 
 @Injectable()
 export class QuestionService {
@@ -14,8 +15,8 @@ export class QuestionService {
     };
     try {
       if (
-        data.type === 'multiple choice' ||
-        data.type === 'single choice'
+        data.type === QUESTION_TYPE.MULTIPLE_CHOICE ||
+        data.type === QUESTION_TYPE.SINGLE_CHOICE
       ) {
         if (questionDetails.optionList && questionDetails.optionList.length) {
           const question = await Question.create(data);
@@ -28,26 +29,29 @@ export class QuestionService {
         } else {
           return 'Option List should be given for multiple and single choice';
         }
-      }else{
+      } else {
         await Question.create(data);
       }
       return 'Question added successfully';
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
   async findAll(formId: number) {
     try {
       let result = [];
-      let allQuestions = await Question.findAll({ where: { formId: formId },order:[['id', 'ASC']] });
+      let allQuestions = await Question.findAll({
+        where: { formId: formId },
+        order: [['id', 'ASC']],
+      });
 
       for (let i = 0; i < allQuestions.length; i++) {
         let allOptions = null;
 
         if (
-          allQuestions[i]['type'] === 'multiple choice' ||
-          allQuestions[i]['type'] === 'single choice'
+          allQuestions[i]['type'] === QUESTION_TYPE.MULTIPLE_CHOICE ||
+          allQuestions[i]['type'] === QUESTION_TYPE.SINGLE_CHOICE
         ) {
           allOptions = await Option.findAll({
             where: { questionId: allQuestions[i]['id'] },
@@ -70,7 +74,7 @@ export class QuestionService {
       }
       return result;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -83,16 +87,16 @@ export class QuestionService {
 
       return 'Question Updated Successfully';
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
   async remove(id: number) {
     try {
-      await Question.destroy({where:{id:id}});
-      return `Question of Id ${id} is deleted!`
+      await Question.destroy({ where: { id: id } });
+      return `Question of Id ${id} is deleted!`;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 }

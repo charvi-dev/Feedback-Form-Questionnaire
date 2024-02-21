@@ -5,8 +5,11 @@ describe('UpdateOptionDto', () => {
   it('should extend OptionDto', () => {
     const updateOptionDto = new UpdateOptionDto();
     const optionDtoProperties = Object.getOwnPropertyNames(new OptionDto());
-    const updateOptionDtoProperties = Object.getOwnPropertyNames(updateOptionDto);
+    const updateOptionDtoProperties =
+      Object.getOwnPropertyNames(updateOptionDto);
 
-    expect(updateOptionDtoProperties).toEqual(expect.arrayContaining(optionDtoProperties));
+    expect(updateOptionDtoProperties).toEqual(
+      expect.arrayContaining(optionDtoProperties),
+    );
   });
 });

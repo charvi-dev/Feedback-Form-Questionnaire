@@ -11,7 +11,6 @@ import { SubmissionService } from './submission.service';
 import { CreateSubmissionDto } from './dto/create.submission.dto';
 import { UserguardGuard } from '../user/user.guard';
 
-
 @Controller('submission')
 export class SubmissionController {
   constructor(private readonly submissionService: SubmissionService) {}
@@ -23,9 +22,7 @@ export class SubmissionController {
 
   @Get('/:formId')
   @UseGuards(UserguardGuard)
-  findAll(@Param('formId',ParseIntPipe) formId: number) {
+  findAll(@Param('formId', ParseIntPipe) formId: number) {
     return this.submissionService.findAll(formId);
   }
-
-  
 }

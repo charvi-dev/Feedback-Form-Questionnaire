@@ -26,7 +26,8 @@ describe('SubmissionModule', () => {
   });
 
   it('should resolve SubmissionController', () => {
-    const submissionController = module.get<SubmissionController>(SubmissionController);
+    const submissionController =
+      module.get<SubmissionController>(SubmissionController);
     expect(submissionController).toBeDefined();
   });
 });

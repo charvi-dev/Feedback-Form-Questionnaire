@@ -22,6 +22,9 @@ describe('QuestionDto', () => {
 
     const errors = await validate(questionDto);
     expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].constraints).toHaveProperty('isEnum', 'This type is not available');
+    expect(errors[0].constraints).toHaveProperty(
+      'isEnum',
+      'This type is not available',
+    );
   });
 });

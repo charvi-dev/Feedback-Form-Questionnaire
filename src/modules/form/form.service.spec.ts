@@ -1,8 +1,12 @@
 import { Form } from 'src/db/models/form.model';
 import { FormService } from './form.service';
 import { FormDetailsDto } from './dto/formDetails.dto';
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { STATUS } from 'src/constants';
 
 jest.mock('src/db/models/form.model', () => ({
   Form: {
@@ -11,7 +15,7 @@ jest.mock('src/db/models/form.model', () => ({
     create: jest.fn(),
     update: jest.fn(),
     findByPk: jest.fn(),
-    destroy:jest.fn()
+    destroy: jest.fn(),
   },
 }));
 
@@ -22,7 +26,7 @@ describe('Form Service', () => {
     title: "Student Detail's",
     description:
       'This form is for collecting student details for testing purpose',
-    status: 'draft',
+    status: STATUS.DRAFT,
     userId: 1,
     closedDate: null,
     publishedDate: null,
@@ -34,7 +38,7 @@ describe('Form Service', () => {
     title: 'my nice title',
     userId: 1,
     description: 'This is going to the best desc',
-    status: 'published',
+    status: STATUS.PUBLISHED,
     publishedDate: null,
     closedDate: null,
     link: '5e77af7d-212d-4cb2-9fdb-f60c891fefcd',
@@ -109,7 +113,7 @@ describe('Form Service', () => {
 
   it('updateStatus should update status to "published"', async () => {
     const id = 1;
-    const status = 'published';
+    const status = STATUS.PUBLISHED;
     const mockForm = {
       link: '5e77af7d-212d-4cb2-9fdb-f60c891fefcd',
     };
@@ -135,7 +139,7 @@ describe('Form Service', () => {
 
   it('updateStatus should update status to "draft"', async () => {
     const id = 1;
-    const status = 'draft';
+    const status = STATUS.DRAFT;
 
     (Form.update as jest.Mock).mockResolvedValue(true);
 
@@ -150,27 +154,27 @@ describe('Form Service', () => {
 
   it('updateStatus should update status to "closed"', async () => {
     const id = 1;
-    const status = 'closed';
+    const status = STATUS.CLOSED;
     (Form.update as jest.Mock).mockResolvedValue(true);
 
     const result = await service.updateStatus(id, status);
 
     expect(Form.update).toHaveBeenCalledWith(
       { status, closedDate: expect.any(Date), link: null },
-      { where: { id } }
+      { where: { id } },
     );
     expect(result).toEqual('status changed!');
   });
 
   it('updateStatus should throw InternalServerErrorException on error', async () => {
     const id = 1;
-    const status = 'published';
+    const status = STATUS.PUBLISHED;
     (Form.update as jest.Mock).mockRejectedValue('DB Error');
-      try {
-        await service.updateStatus(id,status);
-      } catch (error) {
-        expect(error).toBeInstanceOf(InternalServerErrorException)
-      }
+    try {
+      await service.updateStatus(id, status);
+    } catch (error) {
+      expect(error).toBeInstanceOf(InternalServerErrorException);
+    }
   });
 
   it('update should update the form when it exists', async () => {
@@ -194,7 +198,9 @@ describe('Form Service', () => {
     const result = await service.update(id, updateFormDetails);
 
     expect(Form.findByPk).toHaveBeenCalledWith(id);
-    expect(Form.update).toHaveBeenCalledWith(updateFormDetails, { where: { id } });
+    expect(Form.update).toHaveBeenCalledWith(updateFormDetails, {
+      where: { id },
+    });
     expect(result).toEqual(`Form with id ${id} updated successfully`);
   });
 
@@ -210,7 +216,7 @@ describe('Form Service', () => {
     try {
       await service.update(id, updateFormDetails);
     } catch (error) {
-      expect(error).toBeInstanceOf(NotFoundException)
+      expect(error).toBeInstanceOf(NotFoundException);
     }
     expect(Form.findByPk).toHaveBeenCalledWith(id);
     expect(Form.update).not.toHaveBeenCalled();
@@ -225,11 +231,11 @@ describe('Form Service', () => {
     (Form.findByPk as jest.Mock).mockRejectedValue('DB Error');
 
     try {
-      await service.update(id, updateFormDetails)
+      await service.update(id, updateFormDetails);
     } catch (error) {
       expect(error).toBeInstanceOf(InternalServerErrorException);
     }
-  
+
     expect(Form.findByPk).toHaveBeenCalledWith(id);
     expect(Form.update).not.toHaveBeenCalled();
   });
@@ -246,7 +252,9 @@ describe('Form Service', () => {
     const result = await service.getFormLink(formId);
 
     expect(Form.findByPk).toHaveBeenCalledWith(formId);
-    expect(result).toEqual(`http://localhost:${process.env.PORT}/${mockForm.link}`);
+    expect(result).toEqual(
+      `http://localhost:${process.env.PORT}/${mockForm.link}`,
+    );
   });
 
   it('getFormLink should return a message when form link is not available', async () => {
@@ -267,7 +275,7 @@ describe('Form Service', () => {
     const formId = 1;
     (Form.findByPk as jest.Mock).mockRejectedValue('DB Error');
     try {
-      await service.getFormLink(formId)
+      await service.getFormLink(formId);
     } catch (error) {
       expect(error).toBeInstanceOf(InternalServerErrorException);
     }
@@ -288,9 +296,9 @@ describe('Form Service', () => {
     const id = 1;
     (Form.destroy as jest.Mock).mockRejectedValue('DB Error');
     try {
-      await service.remove(id)
+      await service.remove(id);
     } catch (error) {
-      expect(error).toBeInstanceOf(InternalServerErrorException)
+      expect(error).toBeInstanceOf(InternalServerErrorException);
     }
     expect(Form.destroy).toHaveBeenCalledWith({ where: { id } });
   });
