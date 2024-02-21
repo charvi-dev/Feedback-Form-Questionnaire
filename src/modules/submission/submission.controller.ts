@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { SubmissionService } from './submission.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
-import { UserguardGuard } from '../user/userguard.guard';
+import { UserguardGuard } from '../user/user.guard';
 
 
 @Controller('submission')
