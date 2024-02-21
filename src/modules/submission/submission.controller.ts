@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SubmissionService } from './submission.service';
-import { CreateSubmissionDto } from './dto/create-submission.dto';
+import { CreateSubmissionDto } from './dto/create.submission.dto';
 import { UserguardGuard } from '../user/user.guard';
 
 

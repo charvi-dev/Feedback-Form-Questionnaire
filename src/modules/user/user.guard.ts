@@ -44,7 +44,7 @@ import * as jwt from 'jsonwebtoken';
 export class UserguardGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    console.log(request);
+    //console.log(request);
     
     const authorizationHeader = request.headers.authorization;
     
@@ -64,7 +64,7 @@ export class UserguardGuard implements CanActivate {
       request['user'] = decoded;
       return true; 
     } catch (error) {
-      console.error('Invalid token');
+      //console.error('Invalid token');
       return false;
     }
   }
