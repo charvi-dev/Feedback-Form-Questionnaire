@@ -1,101 +1,62 @@
 import { ExecutionContext } from '@nestjs/common';
-import { UserguardGuard } from './user.guard';
+import { Test, TestingModule } from '@nestjs/testing';
+import { UserguardGuard } from './userguard/user.guard';
+import { ForbiddenException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-
 describe('UserguardGuard', () => {
   let guard: UserguardGuard;
-
-  beforeEach(() => {
-    guard = new UserguardGuard();
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [UserguardGuard],
+    }).compile();
+    guard = module.get<UserguardGuard>(UserguardGuard);
   });
-
   it('should be defined', () => {
     expect(guard).toBeDefined();
   });
-
   describe('canActivate', () => {
-    // it('should return true and attach user to request when token is valid', () => {
-    //     const mockRequest = {
-    //       headers: {
-    //         authorization: 'Bearer valid-token'
-    //       },
-    //       body: {}
-    //     };
-    //     const mockContext = {
-    //       switchToHttp: () => ({
-    //         getRequest: () => mockRequest
-    //       })
-    //     } as ExecutionContext;
-
-    //     // Mock user object
-    //     const mockUser = {
-    //       id: '123',
-    //       userName: 'testuser',
-    //       password: 'dlkvchidsc'
-    //     };
-
-    //     // Mocking the jwt.verify function to handle verification and execute a callback
-    //     jest.spyOn(jwt, 'verify').mockImplementation((token, secretOrPublicKey, options, callback) => {
-    //       // Simulate successful verification by executing the callback with the mock user object
-    //       callback(null, mockUser);
-    //     });
-
-    //     expect(guard.canActivate(mockContext)).toEqual(true);
-    //     expect(mockRequest['user']).toEqual(mockUser);
-    //   });
-
-    it('should return false when no authorization header is provided', () => {
-      const mockRequest = {
-        headers: {},
-        body: {},
-      };
-      const mockContext = {
-        switchToHttp: () => ({
-          getRequest: () => mockRequest,
-        }),
-      } as ExecutionContext;
-
-      expect(guard.canActivate(mockContext)).toEqual(false);
-      expect(mockRequest['user']).toBeUndefined();
-    });
-
-    it('should return false when authorization header is malformed', () => {
-      const mockRequest = {
+    it('should return true and attach user to request body for valid token', () => {
+      const mockRequest:any = {
         headers: {
-          authorization: 'InvalidTokenFormat',
+          authorization: 'Bearer validToken',
         },
         body: {},
       };
       const mockContext = {
-        switchToHttp: () => ({
-          getRequest: () => mockRequest,
-        }),
-      } as ExecutionContext;
-
-      expect(guard.canActivate(mockContext)).toEqual(false);
-      expect(mockRequest['user']).toBeUndefined();
+        switchToHttp: jest.fn().mockReturnThis(),
+        getRequest: jest.fn().mockReturnValue(mockRequest),
+      } as unknown as  ExecutionContext;
+     
+      jest.spyOn(jwt, 'verify').mockReturnValue({ id: '123', userName: 'testuser' });
+      const result = guard.canActivate(mockContext);
+      expect(result).toBe(true);
+      expect(mockRequest.body.user).toEqual({ id: '123', userName: 'testuser' });
     });
-
-    // it('should return false when token is invalid', () => {
-    //   const mockRequest = {
-    //     headers: {
-    //       authorization: 'Bearer invalid-token'
-    //     },
-    //     body: {}
-    //   };
-    //   const mockContext = {
-    //     switchToHttp: () => ({
-    //       getRequest: () => mockRequest
-    //     })
-    //   } as ExecutionContext;
-
-    //   jest.spyOn(jwt, 'verify').mockImplementation(() => {
-    //     throw new Error('Invalid token');
-    //   });
-
-    //   expect(guard.canActivate(mockContext)).toEqual(false);
-    //   expect(mockRequest['user']).toBeUndefined();
-    // });
+  
+    it('should return false for missing token', () => {
+      const mockRequest: any = {
+        headers: {},
+      };
+      const mockContext = {
+        switchToHttp: jest.fn().mockReturnThis(),
+        getRequest: jest.fn().mockReturnValue(mockRequest),
+      } as unknown as ExecutionContext;
+      const result = guard.canActivate(mockContext);
+      expect(result).toBe(false);
+    });
+ 
+    
+    it('should throw ForbiddenException for invalid token', () => {
+      const mockRequest: any = {
+        headers: {
+          authorization: 'Bearer invalidToken',
+        },
+      };
+      const mockContext = {
+        switchToHttp: jest.fn().mockReturnThis(),
+        getRequest: jest.fn().mockReturnValue(mockRequest),
+      } as unknown as ExecutionContext;
+      expect(() => guard.canActivate(mockContext)).toThrow(ForbiddenException);
+    });
   });
 });
-
