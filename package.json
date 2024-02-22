@@ -88,7 +88,9 @@
     "coveragePathIgnorePatterns": [
       "node_modules/",
       "dist/",
-      "src/db/migrations/"
+      "src/db/migrations/",
+      "app.module.ts",
+      "main.ts"
     ]
   }
 }

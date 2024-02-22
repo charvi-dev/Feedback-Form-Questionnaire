@@ -16,7 +16,6 @@ export class UserguardGuard implements CanActivate {
     const authorizationHeader = request.headers.authorization;
 
     if (!authorizationHeader) {
-      console.error('No Authorization header provided');
       return false;
     }
 
@@ -27,7 +26,7 @@ export class UserguardGuard implements CanActivate {
     }
 
     try {
-      const decoded = jwt.verify(token, 'charvisalonishamudro');
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
       request.body['user'] = decoded;
       return true;
     } catch (error) {

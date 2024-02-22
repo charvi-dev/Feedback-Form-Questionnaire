@@ -2,10 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OptionService } from './option.service';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { Option } from 'src/db/models/option.model';
-import {
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 
 describe('OptionService', () => {
   let optionService: OptionService;

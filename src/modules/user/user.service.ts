@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -49,7 +48,7 @@ export class UserService {
           userName: stored.userName,
           password: stored.password,
         };
-        const token = jwt.sign(payload, 'charvisalonishamudro', {
+        const token = jwt.sign(payload, process.env.SECRET_KEY, {
           expiresIn: '1h',
         });
         return { token };
@@ -63,7 +62,7 @@ export class UserService {
 
   getUserIdFromToken(token: string): number {
     try {
-      const decodedToken: any = jwt.verify(token, 'charvisalonishamudro');
+      const decodedToken: any = jwt.verify(token, process.env.SECRET_KEY);
       return decodedToken.id;
     } catch (error) {
       throw new Error('Invalid token');

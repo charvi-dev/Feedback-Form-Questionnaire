@@ -6,7 +6,7 @@ import {
 import { Form } from 'src/db/models/form.model';
 import { v4 as uuidv4 } from 'uuid';
 import { FormDetailsDto } from './dto/formDetails.dto';
-import { UpdateFormDto } from './dto/updateform.dto';
+import { UpdateFormDto } from './dto/updateForm.dto';
 import { STATUS } from 'src/constants';
 
 @Injectable()

@@ -14,8 +14,8 @@ import {
 } from '@nestjs/common';
 import { FormService } from './form.service';
 import { FormDetailsDto } from './dto/formDetails.dto';
-import { UpdateFormDto } from './dto/updateform.dto';
-import { UserguardGuard } from '../user/user.guard';
+import { UpdateFormDto } from './dto/updateForm.dto';
+import { UserguardGuard } from '../user/userguard/user.guard';
 
 @Controller('form')
 @UseGuards(UserguardGuard)

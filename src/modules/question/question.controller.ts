@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { QuestionDto } from './dto/question.dto';
-import { UserguardGuard } from '../user/user.guard';
+import { UserguardGuard } from '../user/userguard/user.guard';
 
 @Controller('question')
 @UseGuards(UserguardGuard)

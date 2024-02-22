@@ -110,7 +110,7 @@ describe('UserService', () => {
           userName: storedUser.userName,
           password: storedUser.password,
         },
-        'charvisalonishamudro',
+        process.env.SECRET_KEY,
         { expiresIn: '1h' },
       );
       expect(token).toEqual({ token: 'mockToken' });
@@ -193,7 +193,7 @@ describe('UserService', () => {
 
       const result = service.getUserIdFromToken(token);
 
-      expect(jwt.verify).toHaveBeenCalledWith(token, 'charvisalonishamudro');
+      expect(jwt.verify).toHaveBeenCalledWith(token, process.env.SECRET_KEY);
       expect(result).toBe(userId);
     });
 

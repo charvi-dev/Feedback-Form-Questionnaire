@@ -1,5 +1,5 @@
 import { validate } from 'class-validator';
-import { userDetails } from './userDetails.dto'; // Import the userDetails class
+import { userDetails } from './userDetails.dto';
 
 describe('userDetails', () => {
   it('should validate a userDetails instance with valid data', async () => {

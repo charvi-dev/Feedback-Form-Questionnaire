@@ -67,6 +67,9 @@ export class SubmissionService {
       const submission = await Submission.findOne({
         where: { formId: formId, id: submissionId },
       });
+      if (!submission) {
+        throw new BadRequestException('Submission not found');
+      }
 
       return this.formatSubmissionData(submission);
     } catch (error) {
