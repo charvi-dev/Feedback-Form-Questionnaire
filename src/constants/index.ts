@@ -5,8 +5,10 @@ export const STATUS = {
 } as const;
 
 export const QUESTION_TYPE = {
-  SINGLE_CHOICE: 'single chocie',
+  SINGLE_CHOICE: 'single choice',
   MULTIPLE_CHOICE: 'multiple choice',
   SINGLE_LINE: 'single-line answer',
   MULTIPLE_LINE: 'multiple-line answer',
+  RATING:'rating',
+  RANKING:'ranking'
 } as const;
