@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { OptionDto } from './dto/option.dto';
-import { UserguardGuard } from '../user/user.guard';
+import { UserguardGuard } from '../user/userguard/user.guard';
 
 @Controller('option')
 @UseGuards(UserguardGuard)

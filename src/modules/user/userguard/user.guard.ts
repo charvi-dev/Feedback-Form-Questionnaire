@@ -16,7 +16,6 @@ export class UserguardGuard implements CanActivate {
     const authorizationHeader = request.headers.authorization;
 
     if (!authorizationHeader) {
-      console.error('No Authorization header provided');
       return false;
     }
 
