@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FormController } from './form.controller';
 import { FormService } from './form.service';
 import { FormDetailsDto } from './dto/formDetails.dto';
-import { UpdateFormDto } from './dto/updateform.dto';
+import { UpdateFormDto } from './dto/updateForm.dto';
 import { STATUS } from 'src/constants';
 
 describe('FormController', () => {

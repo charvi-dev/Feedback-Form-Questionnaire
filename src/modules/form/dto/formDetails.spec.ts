@@ -18,13 +18,13 @@ describe('FormDetailsDto', () => {
 
   it('should fail validation with invalid data', async () => {
     const formData = new FormDetailsDto();
-    formData.title = ''; // Invalid: Title is too short
-    formData.userId = -1; // Invalid: Negative user ID
-    formData.description = 'Too short'; // Invalid: Description is too short
-    formData.status = 'invalid'; // Invalid: Status is not one of the allowed values
-    formData.publishedDate = new Date('invalid'); // Invalid: Invalid date format
-    formData.closedDate = new Date(); // Valid: Date can be null
-    formData.link = ''; // Invalid: Link is empty
+    formData.title = '';
+    formData.userId = -1;
+    formData.description = 'Too short';
+    formData.status = 'invalid';
+    formData.publishedDate = new Date('invalid');
+    formData.closedDate = new Date();
+    formData.link = '';
 
     const errors = await validate(formData);
     expect(errors.length).toBeGreaterThan(0);

@@ -28,7 +28,10 @@ export class SubmissionController {
 
   @Get('/:formId/:submissionId')
   @UseGuards(UserguardGuard)
-  findOneSubmission(@Param('formId', ParseIntPipe) formId: number,@Param('submissionId', ParseIntPipe) submissionId: number){
-    return this.submissionService.findByPk(formId,submissionId);
+  findOneSubmission(
+    @Param('formId', ParseIntPipe) formId: number,
+    @Param('submissionId', ParseIntPipe) submissionId: number,
+  ) {
+    return this.submissionService.findByPk(formId, submissionId);
   }
 }

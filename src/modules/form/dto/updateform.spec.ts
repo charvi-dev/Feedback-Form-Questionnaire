@@ -1,4 +1,4 @@
-import { UpdateFormDto } from './updateform.dto';
+import { UpdateFormDto } from './updateForm.dto';
 
 describe('UpdateFormDto', () => {
   it('should create an instance', () => {

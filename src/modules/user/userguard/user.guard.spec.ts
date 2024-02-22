@@ -21,7 +21,7 @@ describe('UserguardGuard', () => {
 
   describe('canActivate', () => {
     it('should return true and attach user to request body for valid token', () => {
-      const mockRequest:any = {
+      const mockRequest: any = {
         headers: {
           authorization: 'Bearer validToken',
         },
@@ -30,18 +30,20 @@ describe('UserguardGuard', () => {
       const mockContext = {
         switchToHttp: jest.fn().mockReturnThis(),
         getRequest: jest.fn().mockReturnValue(mockRequest),
-      } as unknown as  ExecutionContext;
+      } as unknown as ExecutionContext;
 
-     
-      jest.spyOn(jwt, 'verify').mockReturnValue({ id: '123', userName: 'testuser' });
+      jest
+        .spyOn(jwt, 'verify')
+        .mockReturnValue({ id: '123', userName: 'testuser' });
 
       const result = guard.canActivate(mockContext);
 
       expect(result).toBe(true);
-      expect(mockRequest.body.user).toEqual({ id: '123', userName: 'testuser' });
+      expect(mockRequest.body.user).toEqual({
+        id: '123',
+        userName: 'testuser',
+      });
     });
-
-  
 
     it('should return false for missing token', () => {
       const mockRequest: any = {
@@ -56,9 +58,6 @@ describe('UserguardGuard', () => {
 
       expect(result).toBe(false);
     });
-
- 
-    
 
     it('should throw ForbiddenException for invalid token', () => {
       const mockRequest: any = {

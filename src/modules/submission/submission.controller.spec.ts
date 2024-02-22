@@ -34,12 +34,14 @@ describe('SubmissionController', () => {
       const createSubmissionDto: CreateSubmissionDto = {
         formId: 1,
         submissionDate: new Date(),
-        formResponse: { key: 'value' } 
+        formResponse: { key: 'value' },
       };
 
       await controller.create(createSubmissionDto);
 
-      expect(submissionService.create).toHaveBeenCalledWith(createSubmissionDto);
+      expect(submissionService.create).toHaveBeenCalledWith(
+        createSubmissionDto,
+      );
     });
   });
 
