@@ -27,6 +27,7 @@ describe('SubmissionService', () => {
       (Submission.create as jest.Mock).mockResolvedValueOnce(
         createSubmissionDto,
       );
+      jest.spyOn(submissionService,'validateSubmission').mockResolvedValue();
 
       const result = await submissionService.create(createSubmissionDto);
 

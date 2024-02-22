@@ -8,7 +8,7 @@ import { QUESTION_TYPE } from 'src/constants';
 @Injectable()
 export class SubmissionService {
 
-  private async validateSubmission(formResponse) {
+  async validateSubmission(formResponse) {
     try {
      await Promise.all(formResponse.map(async (response) => {
        const question = await Question.findByPk(response["questionId"]);
