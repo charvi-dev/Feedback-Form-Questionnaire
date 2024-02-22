@@ -3,9 +3,47 @@ import { CreateSubmissionDto } from './dto/create.submission.dto';
 import { Submission } from 'src/db/models/submission.model';
 import { Form } from 'src/db/models/form.model';
 import { Question } from 'src/db/models/question.model';
+import { QUESTION_TYPE } from 'src/constants';
 
 @Injectable()
 export class SubmissionService {
+
+  async validateSubmission(formResponse) {
+    try {
+     await Promise.all(formResponse.map(async (response) => {
+       const question = await Question.findByPk(response["questionId"]);
+       const type = question["type"];
+       const length = response["response"].length;
+       const userResponse = response["response"];
+ 
+       if (type === QUESTION_TYPE.SINGLE_LINE && length > 200) {
+         throw new Error(`char limit for single line is 200 for questionId:${question["id"]}`)
+       }
+ 
+       if (type === QUESTION_TYPE.MULTIPLE_LINE && length > 500) {
+         throw new Error(`char limit for multiple line is 500 for questionId:${question["id"]}`)
+       }
+       if(type===QUESTION_TYPE.RATING ){
+        if(userResponse<=0 || userResponse>5){
+          throw new Error(`Please rate on a scale of 1 to 5 for questionId:${question["id"]}`)
+        }
+       }
+       if(type==QUESTION_TYPE.RANKING){
+        if(userResponse<=0 || userResponse>10){
+          throw new Error(`Please rank on a scale of 1 to 10 for for questionId:${question["id"]}`)
+        }
+       }
+       if(type==QUESTION_TYPE.SINGLE_CHOICE && length>1){
+        throw new Error(`Only single choice allowed for questionId:${question["id"]}`)
+       }
+ 
+     }));
+    } catch (error) {
+       throw new BadRequestException(error);
+    }
+ }
+
+
   async create(createSubmissionDto: CreateSubmissionDto) {
     try {
       const formExists = await Form.findByPk(createSubmissionDto.formId);
@@ -14,7 +52,7 @@ export class SubmissionService {
           'Form with the provided ID does not exist.',
         );
       }
-
+      await this.validateSubmission(createSubmissionDto.formResponse);
       const res = await Submission.create({
         formId: createSubmissionDto.formId,
         submissionDate: new Date(),
