@@ -49,7 +49,9 @@ export class FormService {
 
   async updateStatus(id: number, status: string) {
     try {
-      if (status == STATUS.PUBLISHED) {
+      const prevStatus: string = (await Form.findByPk(id)).status;
+
+      if (prevStatus === STATUS.DRAFT && status === STATUS.PUBLISHED) {
         await Form.update(
           {
             status,
@@ -64,11 +66,13 @@ export class FormService {
           { status, publishedDate: null, closedDate: null },
           { where: { id } },
         );
-      } else if (status == STATUS.CLOSED) {
+      } else if (prevStatus === STATUS.PUBLISHED && status == STATUS.CLOSED) {
         await Form.update(
           { status, closedDate: new Date(), link: null },
           { where: { id } },
         );
+      }else{
+        return 'You can close only published form!';
       }
       if (status === STATUS.PUBLISHED) {
         const res = await Form.findByPk(id);

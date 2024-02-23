@@ -1,4 +1,3 @@
-import { Form } from 'src/db/models/form.model';
 import { FormService } from './form.service';
 import { FormDetailsDto } from './dto/formDetails.dto';
 import {
@@ -7,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { STATUS } from 'src/constants';
+import { Form } from 'src/db/models/form.model';
+
 
 jest.mock('src/db/models/form.model', () => ({
   Form: {
@@ -26,11 +27,11 @@ describe('Form Service', () => {
     title: "Student Detail's",
     description:
       'This form is for collecting student details for testing purpose',
-    status: STATUS.DRAFT,
     userId: 1,
-    closedDate: null,
-    publishedDate: null,
-    link: null,
+    status:STATUS.DRAFT,
+    closedDate:null,
+    link:null,
+    publishedDate:null
   };
 
   const output = {
@@ -85,7 +86,7 @@ describe('Form Service', () => {
     }
   });
 
-  it('findByLink should return form data when found', async () => {
+  it('findbyLink should return form data when found', async () => {
     (Form.findOne as jest.Mock).mockResolvedValue(output);
     const link: uuidv4 = '5e77af7d-212d-4cb2-9fdb-f60c891fefcd';
     const result = await service.findbyLink(link);
@@ -93,7 +94,7 @@ describe('Form Service', () => {
     expect(Form.findOne).toHaveBeenCalledWith({ where: { link } });
   });
 
-  it('findByLink should return null when no form is found', async () => {
+  it('findbyLink should return null when no form is found', async () => {
     (Form.findOne as jest.Mock).mockResolvedValue(null);
     const link: uuidv4 = 'non-existent-link';
     const result = await service.findbyLink(link);
@@ -101,7 +102,7 @@ describe('Form Service', () => {
     expect(Form.findOne).toHaveBeenCalledWith({ where: { link } });
   });
 
-  it('findByLink should throw exception', async () => {
+  it('findbyLink should throw exception', async () => {
     (Form.findOne as jest.Mock).mockRejectedValue('DB Error');
     const link: uuidv4 = 'non-existent-link';
     try {
@@ -119,7 +120,7 @@ describe('Form Service', () => {
     };
 
     (Form.update as jest.Mock).mockResolvedValue(true);
-    (Form.findByPk as jest.Mock).mockResolvedValue(mockForm);
+    (Form.findByPk as jest.Mock).mockResolvedValue({status:STATUS.DRAFT,link:mockForm.link});
 
     const result = await service.updateStatus(id, status);
 
@@ -136,6 +137,7 @@ describe('Form Service', () => {
       `http://localhost:${process.env.PORT}/${mockForm.link}`,
     );
   });
+
 
   it('updateStatus should update status to "draft"', async () => {
     const id = 1;
@@ -155,6 +157,7 @@ describe('Form Service', () => {
   it('updateStatus should update status to "closed"', async () => {
     const id = 1;
     const status = STATUS.CLOSED;
+    (Form.findByPk as jest.Mock).mockResolvedValue({status:STATUS.PUBLISHED});
     (Form.update as jest.Mock).mockResolvedValue(true);
 
     const result = await service.updateStatus(id, status);
@@ -165,6 +168,7 @@ describe('Form Service', () => {
     );
     expect(result).toEqual('status changed!');
   });
+
 
   it('updateStatus should throw InternalServerErrorException on error', async () => {
     const id = 1;
