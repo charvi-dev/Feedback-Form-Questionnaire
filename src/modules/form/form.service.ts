@@ -8,6 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { FormDetailsDto } from './dto/formDetails.dto';
 import { UpdateFormDto } from './dto/updateForm.dto';
 import { STATUS } from 'src/constants';
+import { link } from 'fs';
+import { Submission } from 'src/db/models/submission.model';
 
 @Injectable()
 export class FormService {
@@ -22,7 +24,7 @@ export class FormService {
       const res = await Form.create(data);
       return res;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -32,9 +34,17 @@ export class FormService {
         where: { userId: userId },
         order: [['id', 'ASC']],
       });
-      return res;
+      const formsWithSubmissionCount = await Promise.all(
+        res.map(async (form) => {
+          const totalSubmission = await Submission.count({
+            where: { formId: form.id },
+          });
+          return { ...form["dataValues"], totalSubmission };
+        }),
+      );
+      return formsWithSubmissionCount;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -43,7 +53,7 @@ export class FormService {
       const res = await Form.findOne({ where: { link: uuid } });
       return res;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -63,7 +73,7 @@ export class FormService {
         );
       } else if (status === STATUS.DRAFT) {
         await Form.update(
-          { status, publishedDate: null, closedDate: null },
+          { status, publishedDate: null, closedDate: null, link: null },
           { where: { id } },
         );
       } else if (prevStatus === STATUS.PUBLISHED && status == STATUS.CLOSED) {
@@ -71,8 +81,8 @@ export class FormService {
           { status, closedDate: new Date(), link: null },
           { where: { id } },
         );
-      }else{
-        return 'You can close only published form!';
+      } else {
+        return 'You can publish only draft form and can close only published form';
       }
       if (status === STATUS.PUBLISHED) {
         const res = await Form.findByPk(id);
@@ -81,7 +91,7 @@ export class FormService {
         return 'status changed!';
       }
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -101,9 +111,9 @@ export class FormService {
       }
     } catch (error) {
       if (error['message'] === 'Not Found') {
-        throw new NotFoundException();
+        throw new NotFoundException(`Form with id ${id} not found!`);
       } else {
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException(error);
       }
     }
   }
@@ -117,7 +127,7 @@ export class FormService {
         return `Form Link of id ${formId} is not available!`;
       }
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -126,7 +136,7 @@ export class FormService {
       await Form.destroy({ where: { id: id } });
       return `Form of id ${id} is deleted!`;
     } catch (error) {
-      throw new InternalServerErrorException(error['parent']);
+      throw new InternalServerErrorException(error);
     }
   }
 }

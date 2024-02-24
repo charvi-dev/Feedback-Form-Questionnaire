@@ -1,7 +1,7 @@
 import {
   Controller,
   Get,
-  NotFoundException,
+  InternalServerErrorException,
   Param,
   ParseUUIDPipe,
 } from '@nestjs/common';
@@ -21,20 +21,18 @@ export class AppController {
     try {
       let result = {};
       let formData = await this.formService.findbyLink(uuid);
-      result['Id'] = formData.id;
-      result['Title'] = formData.title;
-      result['Description'] = formData.description;
-      result['status'] = formData.status;
-      result['Questitons'] = await this.questionService.findAll(formData.id);
-      if (result['status'] === 'draft') {
-        return 'Form Not Published!';
-      } else if (result['status'] === 'closed') {
-        return 'Form is not accepting any responses now!';
-      } else {
+      if(formData){
+        result['Id'] = formData.id;
+        result['Title'] = formData.title;
+        result['Description'] = formData.description;
+        result['status'] = formData.status;
+        result['Questitons'] = await this.questionService.findAll(formData.id);
         return result;
+      }else{
+        return 'This link is not valid!'
       }
     } catch (error) {
-      throw new NotFoundException();
+      throw new InternalServerErrorException(error);
     }
   }
 }

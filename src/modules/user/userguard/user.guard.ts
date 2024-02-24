@@ -30,7 +30,7 @@ export class UserguardGuard implements CanActivate {
       request.body['user'] = decoded;
       return true;
     } catch (error) {
-      throw new ForbiddenException();
+      throw new ForbiddenException(error);
     }
   }
 }

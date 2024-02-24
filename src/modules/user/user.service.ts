@@ -74,7 +74,7 @@ export class UserService {
       const id = this.getUserIdFromToken(jwtToken);
       const user = await User.findByPk(id);
       if (!user) {
-        throw new NotFoundException();
+        throw new NotFoundException(`user with id ${id} not found!`);
       }
 
       if (updateDetails.userName) {

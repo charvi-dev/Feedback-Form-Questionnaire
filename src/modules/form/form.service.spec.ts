@@ -7,6 +7,9 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { STATUS } from 'src/constants';
 import { Form } from 'src/db/models/form.model';
+import { Submission } from 'src/db/models/submission.model';
+import { title } from 'process';
+
 
 
 jest.mock('src/db/models/form.model', () => ({
@@ -19,6 +22,12 @@ jest.mock('src/db/models/form.model', () => ({
     destroy: jest.fn(),
   },
 }));
+
+jest.mock('src/db/models/submission.model',()=>({
+  Submission:{
+    count:jest.fn()
+  }
+}))
 
 describe('Form Service', () => {
   let service: FormService;
@@ -68,9 +77,10 @@ describe('Form Service', () => {
   });
 
   it('findAll', async () => {
-    (Form.findAll as jest.Mock).mockResolvedValue([]);
+    (Form.findAll as jest.Mock).mockResolvedValue([{}]);
+    (Submission.count as jest.Mock).mockResolvedValue(1);
     const result = await service.findAll(1);
-    expect(result).toEqual([]);
+    expect(result).toEqual([{totalSubmission:1}]);
     expect(Form.findAll).toHaveBeenCalledWith({
       where: { userId: 1 },
       order: [['id', 'ASC']],
@@ -148,7 +158,7 @@ describe('Form Service', () => {
     const result = await service.updateStatus(id, status);
 
     expect(Form.update).toHaveBeenCalledWith(
-      { status, publishedDate: null, closedDate: null },
+      { status, publishedDate: null, closedDate: null,link:null },
       { where: { id } },
     );
     expect(result).toEqual('status changed!');

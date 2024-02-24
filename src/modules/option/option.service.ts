@@ -12,7 +12,7 @@ export class OptionService {
       );
       return `option of id ${id} is updated`;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -21,7 +21,7 @@ export class OptionService {
       await Option.destroy({ where: { id } });
       return ` removed option of id  ${id}`;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 }
