@@ -96,7 +96,7 @@ export class SubmissionService {
         submissions.map((submission) => this.formatSubmissionData(submission)),
       );
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException(error);
     }
   }
 
@@ -111,7 +111,7 @@ export class SubmissionService {
 
       return this.formatSubmissionData(submission);
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException(error);
     }
   }
 }

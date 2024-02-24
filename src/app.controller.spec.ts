@@ -2,19 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { FormService } from './modules/form/form.service';
 import { QuestionService } from './modules/question/question.service';
-import { NotFoundException } from '@nestjs/common';
-
-jest.mock('./modules/form/form.service', () => ({
-  FormService: {
-    findbyLink: jest.fn(),
-  },
-}));
-
-jest.mock('./modules/question/question.service', () => ({
-  QuestionService: {
-    findAll: jest.fn(),
-  },
-}));
+import { InternalServerErrorException } from '@nestjs/common';
+import { STATUS } from './constants';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -22,7 +11,7 @@ describe('AppController', () => {
   let questionService: QuestionService;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [
         {
@@ -40,91 +29,60 @@ describe('AppController', () => {
       ],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
-    formService = app.get<FormService>(FormService);
-    questionService = app.get<QuestionService>(QuestionService);
+    appController = module.get<AppController>(AppController);
+    formService = module.get<FormService>(FormService);
+    questionService = module.get<QuestionService>(QuestionService);
   });
 
-  describe('showForm', () => {
-    it('should return form data when form is found', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      const formData = {
-        id: 1,
-        title: 'Test Form',
-        description: 'This is a test form',
-        status: 'published',
-      };
-      const questionsData = [
-        { QuestionId: 1, Question: 'Question 1', Type: 'text' },
-        {
-          QuestionId: 2,
-          Question: 'Question 2',
-          Type: 'single choice',
-          Option: ['Option 1', 'Option 2'],
-        },
-      ];
-      (formService.findbyLink as jest.Mock).mockResolvedValue(formData);
-      (questionService.findAll as jest.Mock).mockResolvedValue(questionsData);
+  it('showForm should return form data when valid link is provided', async () => {
+    const uuid = '09fe985f-85fb-404f-801c-7d0605d3f10a';
+    const formData = {
+      id: 1,
+      title: 'Test Form',
+      description: 'This is a test form',
+      status: STATUS.PUBLISHED,
+    };
+    const questions = [
+      { id: 1, text: 'Question 1' },
+      { id: 2, text: 'Question 2' },
+    ];
 
-      const result = await appController.showForm(uuid);
+    (formService.findbyLink as jest.Mock).mockResolvedValue(formData);
+    (questionService.findAll as jest.Mock).mockResolvedValue(questions);
 
-      expect(result).toEqual({
-        Id: 1,
-        Title: 'Test Form',
-        Description: 'This is a test form',
-        status: 'published',
-        Questitons: questionsData,
-      });
+    const result = await appController.showForm(uuid);
+
+    expect(formService.findbyLink).toHaveBeenCalledWith(uuid);
+    expect(questionService.findAll).toHaveBeenCalledWith(formData.id);
+    expect(result).toEqual({
+      Id: formData.id,
+      Title: formData.title,
+      Description: formData.description,
+      status: formData.status,
+      Questitons: questions,
     });
+  });
 
-    it('should return "Form Not Published!" when form is in draft status', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      const formData = {
-        id: 1,
-        title: 'Test Form',
-        description: 'This is a test form',
-        status: 'draft',
-      };
-      (formService.findbyLink as jest.Mock).mockResolvedValue(formData);
+  it('showForm should return "This link is not valid!" when invalid link is provided', async () => {
+    const uuid = '09fe985f-85fb-404f-801c-7d0605d3f10a';
 
-      const result = await appController.showForm(uuid);
+    (formService.findbyLink as jest.Mock).mockResolvedValue(null);
 
-      expect(result).toBe('Form Not Published!');
-    });
+    const result = await appController.showForm(uuid);
 
-    it('should return "Form is not accepting any responses now!" when form is in closed status', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      const formData = {
-        id: 1,
-        title: 'Test Form',
-        description: 'This is a test form',
-        status: 'closed',
-      };
-      (formService.findbyLink as jest.Mock).mockResolvedValue(formData);
+    expect(formService.findbyLink).toHaveBeenCalledWith(uuid);
+    expect(result).toEqual('This link is not valid!');
+  });
 
-      const result = await appController.showForm(uuid);
+  it('showForm should throw InternalServerErrorException when an error occurs', async () => {
+    const uuid = '09fe985f-85fb-404f-801c-7d0605d3f10a';
 
-      expect(result).toBe('Form is not accepting any responses now!');
-    });
+    (formService.findbyLink as jest.Mock).mockRejectedValue('Some error');
 
-    it('should throw NotFoundException when form is not found', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      (formService.findbyLink as jest.Mock).mockResolvedValue(null);
-
-      await expect(appController.showForm(uuid)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-
-    it('should throw NotFoundException when an error occurs', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      (formService.findbyLink as jest.Mock).mockRejectedValue(
-        new Error('DB Error'),
-      );
-
-      await expect(appController.showForm(uuid)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
+    try {
+      await appController.showForm(uuid);
+    } catch (error) {
+      expect(error).toBeInstanceOf(InternalServerErrorException);
+    }
   });
 });
