@@ -74,8 +74,8 @@ describe('UserService', () => {
         password: 'Charvi@3107',
       };
 
-      await expect(service.signUp(userDetailsData)).rejects.toThrow(
-        'Invalid user details',
+      await expect(service.signUp(userDetailsData)).resolves.toBe(
+        'Please enter user name and password',
       );
     });
   });

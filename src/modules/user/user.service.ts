@@ -20,9 +20,10 @@ export class UserService {
 
   async signUp(signUpDetails: userDetails) {
     if (!signUpDetails.userName || !signUpDetails.password) {
-      throw new Error('Invalid user details');
+      return ('Please enter user name and password');
     }
     try {
+     
       const hashedPassword = await this.hashPassword(signUpDetails.password);
       const res = await User.create({
         userName: signUpDetails.userName,
@@ -35,6 +36,9 @@ export class UserService {
   }
 
   async login(loginDetails: userDetails) {
+    if (!loginDetails.userName || !loginDetails.password) {
+      return ('Invalid user details');
+    }
     try {
       const stored = await User.findOne({
         where: { userName: loginDetails.userName },
