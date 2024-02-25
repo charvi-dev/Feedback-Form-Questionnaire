@@ -24,12 +24,15 @@ export class SubmissionService {
          throw new Error(`char limit for multiple line is 500 for questionId:${question["id"]}`)
        }
        if(type===QUESTION_TYPE.RATING ){
-        if(userResponse<=0 || userResponse>5){
+        const userRating = parseInt(userResponse)
+        if(isNaN(userRating)||userResponse<=0 || userResponse>5){
           throw new Error(`Please rate on a scale of 1 to 5 for questionId:${question["id"]}`)
         }
        }
+
        if(type==QUESTION_TYPE.RANKING){
-        if(userResponse<=0 || userResponse>10){
+        const userRanking = parseInt(userResponse)
+        if(isNaN(userRanking)||userResponse<=0 || userResponse>10){
           throw new Error(`Please rank on a scale of 1 to 10 for for questionId:${question["id"]}`)
         }
        }
@@ -91,6 +94,16 @@ export class SubmissionService {
       const submissions = await Submission.findAll({
         where: { formId: formId },
       });
+      const form = await Form.findByPk(formId);
+        
+      if (!form) {
+          throw new BadRequestException('Invalid form ID');
+      }
+
+
+      if (submissions.length === 0) {
+        throw new BadRequestException('No submissions for the given FormId ');
+    }
 
       return Promise.all(
         submissions.map((submission) => this.formatSubmissionData(submission)),

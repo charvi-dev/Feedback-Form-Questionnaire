@@ -223,44 +223,57 @@ describe('SubmissionService', () => {
   });
  
   describe('findAll', () => {
-    it('should find all submissions for a form', async () => {
+    it('should return formatted submissions for a valid form ID', async () => {
+      const formId = 1;
       const mockSubmissions = [
-        {
-          id: 1,
-          formId: 1,
-          formResponse: [{ questionId: 1, response: 'Sample response' }],
-        },
-        {
-          id: 2,
-          formId: 1,
-          formResponse: [{ questionId: 2, response: 'Another response' }],
-        },
+        { id: 1, formId: 1, formResponse: [{ questionId: 1, response: 'Sample response' }] },
+        { id: 2, formId: 1, formResponse: [{ questionId: 2, response: 'Another response' }] }
       ];
- 
+      const mockFormattedSubmissions = [
+        { submissionId: 1, formId: 1, questions: [{ questionId: 1, text: 'Question 1', response: 'Sample response' }] },
+        { submissionId: 2, formId: 1, questions: [{ questionId: 2, text: 'Question 2', response: 'Another response' }] }
+      ];
+      const mockForm = { id: 1, name: 'Form 1' };
+
       (Submission.findAll as jest.Mock).mockResolvedValueOnce(mockSubmissions);
- 
-      submissionService.formatSubmissionData = jest
-        .fn()
-        .mockImplementation((submission) => {
-          return {
-            submissionId: submission.id,
-            formId: submission.formId,
-            questions: submission.formResponse.map((response) => ({
-              questionId: response.questionId,
-              text: `Question ${response.questionId}`,
-              response: response.response,
-            })),
-          };
-        });
- 
-      const result = await submissionService.findAll(1);
- 
-      expect(result).toHaveLength(2);
-      expect(result[0].submissionId).toEqual(1);
-      expect(result[0].formId).toEqual(1);
-      expect(result[0].questions).toHaveLength(1);
-      expect(result[0].questions[0].questionId).toEqual(1);
+      (Form.findByPk as jest.Mock).mockResolvedValueOnce(mockForm);
+      submissionService.formatSubmissionData = jest.fn().mockImplementation((submission) => {
+        const formattedSubmission = mockFormattedSubmissions.find(s => s.submissionId === submission.id);
+        return formattedSubmission ? formattedSubmission : null;
+      });
+
+      const result = await submissionService.findAll(formId);
+
+      expect(result).toEqual(mockFormattedSubmissions);
+      expect(Submission.findAll).toHaveBeenCalledWith({ where: { formId: formId } });
+      expect(Form.findByPk).toHaveBeenCalledWith(formId);
     });
+    it('should throw BadRequestException for an invalid form ID', async () => {
+      const formId = 2;
+      const mockSubmissions = [];
+      const mockForm = null;
+
+      (Submission.findAll as jest.Mock).mockResolvedValueOnce(mockSubmissions);
+      (Form.findByPk as jest.Mock).mockResolvedValueOnce(mockForm);
+
+      await expect(submissionService.findAll(formId)).rejects.toThrowError(BadRequestException);
+      expect(Submission.findAll).toHaveBeenCalledWith({ where: { formId: formId } });
+      expect(Form.findByPk).toHaveBeenCalledWith(formId);
+    });
+    it('should throw BadRequestException if no submissions found for the given form ID', async () => {
+      const formId = 3;
+      const mockSubmissions = [];
+      const mockForm = { id: 3, name: 'Form 3' };
+
+  
+      (Submission.findAll as jest.Mock).mockResolvedValueOnce(mockSubmissions);
+      (Form.findByPk as jest.Mock).mockResolvedValueOnce(mockForm);
+
+      await expect(submissionService.findAll(formId)).rejects.toThrowError(BadRequestException);
+      expect(Submission.findAll).toHaveBeenCalledWith({ where: { formId: formId } });
+      expect(Form.findByPk).toHaveBeenCalledWith(formId);
+    });
+
  
     it('should throw BadRequestException if an error occurs', async () => {
       (Submission.findAll as jest.Mock).mockRejectedValueOnce(
